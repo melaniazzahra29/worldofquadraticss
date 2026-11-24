@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>World Of Quadratic — Portal Utama</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      /* Palet Pink Soft, Kuning Pastel, dan Hijau Soft */
+      --pink-soft: #FFE3EC;
+      --pink-mid: #F9B8CE;
+      --pink-deep: #C95B84;
+      --yellow-soft: #FFF4C7;
+      --yellow-mid: #F7DC79;
+      --yellow-deep: #8A6812;
+      --green-soft: #E2F1E6;
+      --green-mid: #9CC7A8;
+      --green-deep: #3E6B4C;
+      --bg-cream: #FFFDF9;
+      --white: #FFFFFF;
+      --text-dark: #2E3A32;
+      --text-muted: #5D6E63;
+      --shadow-soft: 0 10px 26px rgba(138, 104, 18, 0.09);
+      --shadow-pop: 0 14px 30px rgba(201, 91, 132, 0.16);
+      --radius-xl: 26px;
+      --radius-lg: 20px;
+      --radius-pill: 999px;
+      --transition: all 0.26s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: var(--text-dark);
+      background-color: var(--bg-cream);
+      background-image:
+        radial-gradient(var(--pink-mid) 1.4px, transparent 1.4px),
+        radial-gradient(var(--green-mid) 1.4px, transparent 1.4px),
+        radial-gradient(var(--yellow-mid) 1.6px, var(--bg-cream) 1.6px);
+      background-size: 48px 48px;
+      background-position: 0 0, 24px 24px, 12px 36px;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    h1, h2, h3, .font-cute {
+      font-family: 'Fredoka', 'Nunito', sans-serif;
+    }
+
+    /* Ornamen Lucu Melayang */
+    .bg-ornaments {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .ornament {
+      position: absolute;
+      user-select: none;
+      animation: floaty 6s ease-in-out infinite;
+    }
+
+    .ornament:nth-child(2n) {
+      animation-duration: 7.5s;
+      animation-delay: 1s;
+    }
+
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(6deg); }
+    }
+
+    .wrapper {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 28px 20px 56px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header / Topbar */
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 2.5px solid var(--pink-mid);
+      border-radius: var(--radius-pill);
+      padding: 12px 22px;
+      box-shadow: var(--shadow-soft);
+      margin-bottom: 28px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--pink-soft), var(--yellow-soft), var(--green-soft));
+      border: 2px solid var(--green-mid);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+    }
+
+    .brand-name {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--green-deep);
+    }
+
+    .pill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill-tag {
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 5px 13px;
+      border-radius: var(--radius-pill);
+    }
+
+    .tag-pink { background: var(--pink-soft); color: var(--pink-deep); border: 1.5px solid var(--pink-mid); }
+    .tag-yellow { background: var(--yellow-soft); color: var(--yellow-deep); border: 1.5px solid var(--yellow-mid); }
+    .tag-green { background: var(--green-soft); color: var(--green-deep); border: 1.5px solid var(--green-mid); }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, var(--pink-soft) 0%, var(--yellow-soft) 52%, var(--green-soft) 100%);
+      border: 3px solid var(--white);
+      outline: 2.5px solid var(--green-mid);
+      border-radius: var(--radius-xl);
+      padding: 34px 30px;
+      display: grid;
+      grid-template-columns: 1.35fr 0.65fr;
+      gap: 24px;
+      align-items: center;
+      box-shadow: var(--shadow-soft);
+      margin-bottom: 34px;
+      position: relative;
+    }
+
+    .hero-sticker {
+      display: inline-block;
+      background: var(--white);
+      color: var(--pink-deep);
+      border: 2px solid var(--pink-mid);
+      border-radius: var(--radius-pill);
+      padding: 5px 14px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .hero h1 {
+      font-size: 2.2rem;
+      color: var(--green-deep);
+      line-height: 1.22;
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      color: var(--text-dark);
+      font-size: 0.96rem;
+      line-height: 1.7;
+    }
+
+    .mascot-card {
+      background: rgba(255, 255, 255, 0.85);
+      border: 2.5px dashed var(--pink-mid);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      text-align: center;
+    }
+
+    .mascot-caption {
+      margin-top: 8px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: var(--pink-deep);
+    }
+
+    /* Section Title */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .section-header h2 {
+      font-size: 1.55rem;
+      color: var(--green-deep);
+    }
+
+    /* Grid 3 Kartu Utama */
+    .portal-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+      margin-bottom: 32px;
+    }
+
+    .portal-card {
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: var(--transition);
+      position: relative;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .portal-card:hover {
+      transform: translateY(-7px) rotate(-0.4deg);
+      box-shadow: var(--shadow-pop);
+    }
+
+    .card-theme-pink {
+      border: 2.5px solid var(--pink-mid);
+      background: linear-gradient(180deg, #FFFFFF 55%, var(--pink-soft) 100%);
+    }
+
+    .card-theme-yellow {
+      border: 2.5px solid var(--yellow-mid);
+      background: linear-gradient(180deg, #FFFFFF 55%, var(--yellow-soft) 100%);
+    }
+
+    .card-theme-green {
+      border: 2.5px solid var(--green-mid);
+      background: linear-gradient(180deg, #FFFFFF 55%, var(--green-soft) 100%);
+    }
+
+    .top-ribbon {
+      position: absolute;
+      top: -12px;
+      right: 18px;
+      padding: 3px 12px;
+      border-radius: var(--radius-pill);
+      font-size: 0.75rem;
+      font-weight: 800;
+      border: 1.5px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .ribbon-pink { background: var(--pink-soft); color: var(--pink-deep); }
+    .ribbon-yellow { background: var(--yellow-soft); color: var(--yellow-deep); }
+    .ribbon-green { background: var(--green-soft); color: var(--green-deep); }
+
+    .icon-bubble {
+      width: 62px;
+      height: 62px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin-bottom: 14px;
+      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .bubble-pink { background: var(--pink-soft); border: 2px solid var(--pink-mid); }
+    .bubble-yellow { background: var(--yellow-soft); border: 2px solid var(--yellow-mid); }
+    .bubble-green { background: var(--green-soft); border: 2px solid var(--green-mid); }
+
+    .portal-card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 8px;
+      color: var(--text-dark);
+    }
+
+    .portal-card p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    /* Tombol Masuk */
+    .btn-enter {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 13px 18px;
+      border-radius: var(--radius-pill);
+      text-decoration: none;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 0.96rem;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .btn-enter:active {
+      transform: scale(0.97);
+    }
+
+    .btn-pink {
+      background: var(--pink-mid);
+      color: #5C1D35;
+      border: 2px solid var(--pink-deep);
+      box-shadow: 0 4px 0 var(--pink-deep);
+    }
+    .btn-pink:hover { background: #F49BB9; transform: translateY(-2px); }
+
+    .btn-yellow {
+      background: var(--yellow-mid);
+      color: #574006;
+      border: 2px solid var(--yellow-deep);
+      box-shadow: 0 4px 0 var(--yellow-deep);
+    }
+    .btn-yellow:hover { background: #EED061; transform: translateY(-2px); }
+
+    .btn-green {
+      background: var(--green-mid);
+      color: #1F422A;
+      border: 2px solid var(--green-deep);
+      box-shadow: 0 4px 0 var(--green-deep);
+    }
+    .btn-green:hover { background: #84B893; transform: translateY(-2px); }
+
+    /* Sticky Note Catatan Belajar */
+    .note-strip {
+      background: var(--yellow-soft);
+      border: 2px dashed var(--yellow-deep);
+      border-radius: var(--radius-lg);
+      padding: 16px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      transform: rotate(-0.4deg);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .note-strip strong {
+      color: var(--yellow-deep);
+    }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; text-align: center; }
+      .portal-grid { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Elemen Dekoratif Lucu -->
+  <div class="bg-ornaments" aria-hidden="true">
+    <span class="ornament" style="top: 9%; left: 5%; font-size: 1.8rem;">🌸</span>
+    <span class="ornament" style="top: 16%; right: 6%; font-size: 1.7rem;">⭐</span>
+    <span class="ornament" style="top: 48%; left: 3%; font-size: 1.6rem;">🍀</span>
+    <span class="ornament" style="top: 62%; right: 4%; font-size: 1.9rem;">✨</span>
+    <span class="ornament" style="bottom: 10%; left: 8%; font-size: 1.7rem;">🌼</span>
+    <span class="ornament" style="bottom: 14%; right: 9%; font-size: 1.8rem;">🎀</span>
+  </div>
+
+  <div class="wrapper">
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-badge">🌷</div>
+        <span class="brand-name font-cute">World Of Quadratic</span>
+      </div>
+      <div class="pill-tags">
+        <span class="pill-tag tag-pink">💗 Seru & Playful</span>
+        <span class="pill-tag tag-yellow">💛 Persamaan Kuadrat</span>
+        <span class="pill-tag tag-green">💚 Belajar Mandiri</span>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div>
+        <span class="hero-sticker">✨ Selamat Datang di World Of Quadratic</span>
+        <h1>Satu Dunia Interaktif untuk Belajar, Bermain, dan Menguji Kemampuanmu!</h1>
+        <p>
+          Selamat datang di <strong>World Of Quadratic</strong>! Pilih aktivitas yang ingin kamu mulai
+          hari ini—mulai dari eksplorasi materi interaktif di <strong>Quadratic Space</strong>, adu
+          strategi di <strong>Block Math Blast</strong>, sampai menguji pemahaman lewat
+          <strong>Quadratic Quiz</strong>.
+        </p>
+      </div>
+
+      <div class="mascot-card">
+        <svg width="118" height="118" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-label="Maskot Parabola Lucu">
+          <circle cx="60" cy="60" r="54" fill="#E2F1E6" stroke="#9CC7A8" stroke-width="3.5"/>
+          <circle cx="24" cy="26" r="6" fill="#FFE3EC"/>
+          <circle cx="96" cy="28" r="7" fill="#FFF4C7"/>
+          <!-- Kurva Parabola Senyum -->
+          <path d="M 28 32 Q 60 110 92 32" fill="#FFF4C7" stroke="#3E6B4C" stroke-width="6.5" stroke-linecap="round"/>
+          <!-- Pipi Pink -->
+          <ellipse cx="38" cy="64" rx="6" ry="3.8" fill="#F9B8CE"/>
+          <ellipse cx="82" cy="64" rx="6" ry="3.8" fill="#F9B8CE"/>
+          <!-- Mata -->
+          <circle cx="45" cy="57" r="5" fill="#2E3A32"/>
+          <circle cx="75" cy="57" r="5" fill="#2E3A32"/>
+          <circle cx="46.8" cy="55.2" r="1.8" fill="#FFFFFF"/>
+          <circle cx="76.8" cy="55.2" r="1.8" fill="#FFFFFF"/>
+          <!-- Senyum Manis -->
+          <path d="M 51 68 Q 60 77 69 68" stroke="#2E3A32" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        </svg>
+        <div class="mascot-caption">"Yuk jelajahi World Of Quadratic! 🌈"</div>
+      </div>
+    </section>
+
+    <!-- 3 Tombol / Kartu Utama -->
+    <div class="section-header">
+      <h2>🎈 Pilih Menu Utama</h2>
+      <span class="pill-tag tag-green">Klik tombol untuk masuk ke halaman tujuan</span>
+    </div>
+
+    <main class="portal-grid">
+      <!-- 1. Quadratic Space -->
+      <article class="portal-card card-theme-green">
+        <span class="top-ribbon ribbon-green">Modul & Lab</span>
+        <div>
+          <div class="icon-bubble bubble-green">📐</div>
+          <h3>Quadratic Space</h3>
+          <p>
+            Jelajahi konsep persamaan kuadrat, grafik parabola, diskriminan, langkah penyelesaian,
+            dan misi interaktif secara terstruktur.
+          </p>
+        </div>
+        <a class="btn-enter btn-green" href="./quadratic-space/index.html">
+          Masuk ke Quadratic Space →
+        </a>
+      </article>
+
+      <!-- 2. Block Math Blast -->
+      <article class="portal-card card-theme-pink">
+        <span class="top-ribbon ribbon-pink">Game Interaktif</span>
+        <div>
+          <div class="icon-bubble bubble-pink">🧩</div>
+          <h3>Block Math Blast</h3>
+          <p>
+            Mainkan game blok interaktif bertema persamaan kuadrat yang seru dan menantang untuk
+            melatih ketepatan serta kecepatan berpikir.
+          </p>
+        </div>
+        <a class="btn-enter btn-pink" href="./block-math-blast/index.html">
+          Mainkan Block Math Blast →
+        </a>
+      </article>
+
+      <!-- 3. Quadratic Quiz -->
+      <article class="portal-card card-theme-yellow">
+        <span class="top-ribbon ribbon-yellow">Uji Kemampuan</span>
+        <div>
+          <div class="icon-bubble bubble-yellow">📝</div>
+          <h3>Quadratic Quiz</h3>
+          <p>
+            Kerjakan kuis evaluasi untuk mengukur sejauh mana pemahamanmu terhadap materi persamaan
+            kuadrat setelah belajar dan bermain.
+          </p>
+        </div>
+        <a class="btn-enter btn-yellow" href="./quadratic-quiz/index.html">
+          Mulai Quadratic Quiz →
+        </a>
+      </article>
+    </main>
+
+    <!-- Catatan Kecil -->
+    <div class="note-strip">
+      <div>
+        <strong>💡 Tips Belajar:</strong> Mulai dari <strong>Quadratic Space</strong> untuk memahami konsep,
+        lalu asah intuisi lewat <strong>Block Math Blast</strong>, dan tutup dengan <strong>Quadratic Quiz</strong>!
+      </div>
+      <span class="pill-tag tag-pink">🌸 Semangat Belajar!</span>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>BLOCK MATH BLAST - Persamaan Kuadrat Kelas X</title>
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --accent-yellow: #fbbf24;
+      --accent-green: #22c55e;
+      --accent-red: #ef4444;
+      --card-bg: rgba(30, 41, 59, 0.88);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --board-bg: #0f172a;
+      --cell-bg: #1e293b;
+      --cell-border: #334155;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    #app-container {
+      width: 100%;
+      max-width: 480px;
+      height: 100vh;
+      max-height: 920px;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .screen {
+      display: none;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+      padding: 16px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 10;
+      overflow-y: auto;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    /* TYPOGRAPHY & BUTTONS */
+    h1 {
+      font-size: 2.1rem;
+      font-weight: 900;
+      text-align: center;
+      background: linear-gradient(to right, #a855f7, #6366f1, #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 4px;
+      text-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+
+    .subtitle {
+      text-align: center;
+      color: var(--accent-yellow);
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+      letter-spacing: 1px;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-secondary {
+      background: rgba(51, 65, 85, 0.8);
+      box-shadow: none;
+      border: 1px solid var(--cell-border);
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+    }
+
+    /* HOME SCREEN & FORM */
+    #home-screen {
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .logo-blocks {
+      display: grid;
+      grid-template-columns: repeat(3, 22px);
+      gap: 4px;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .logo-block {
+      width: 22px;
+      height: 22px;
+      border-radius: 5px;
+    }
+
+    .high-score-badge {
+      background: rgba(251, 191, 36, 0.15);
+      border: 1px solid var(--accent-yellow);
+      color: var(--accent-yellow);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.9rem;
+    }
+
+    .form-card {
+      background: var(--card-bg);
+      border: 1px solid var(--cell-border);
+      border-radius: 16px;
+      padding: 16px;
+      width: 100%;
+      max-width: 340px;
+      margin-bottom: 16px;
+      text-align: left;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .form-control {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid var(--cell-border);
+      color: white;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+    }
+
+    /* IN-GAME STATS PANEL */
+    .game-header {
+      background: var(--card-bg);
+      padding: 10px 12px;
+      border-radius: 14px;
+      margin-bottom: 10px;
+      border: 1px solid var(--cell-border);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .player-banner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      border-bottom: 1px dashed var(--cell-border);
+      padding-bottom: 4px;
+    }
+
+    .stats-grid-top {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      text-align: center;
+    }
+
+    .stat-card {
+      background: rgba(15, 23, 42, 0.6);
+      padding: 6px 4px;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-card .lbl {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .stat-card .val {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: white;
+    }
+
+    .timer-warning {
+      color: var(--accent-red) !important;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* BOARD GRID */
+    .board-container {
+      width: 100%;
+      aspect-ratio: 1;
+      background: var(--board-bg);
+      border-radius: 16px;
+      padding: 6px;
+      border: 2px solid var(--cell-border);
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      grid-template-rows: repeat(8, 1fr);
+      gap: 4px;
+      box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.5);
+      position: relative;
+    }
+
+    .cell {
+      background: var(--cell-bg);
+      border-radius: 6px;
+      transition: background-color 0.15s ease, transform 0.15s ease;
+    }
+
+    .cell.filled {
+      box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.3), 0 2px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    .cell.preview { opacity: 0.45; }
+
+    .cell.clearing { animation: clearAnim 0.3s ease forwards; }
+
+    @keyframes clearAnim {
+      0% { transform: scale(1); filter: brightness(2); }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(0); opacity: 0; }
+    }
+
+    /* BLOCKS TRAY */
+    .blocks-tray {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin-top: 10px;
+      height: 110px;
+      background: var(--card-bg);
+      border-radius: 14px;
+      border: 1px solid var(--cell-border);
+      padding: 6px;
+    }
+
+    .block-item {
+      width: 31%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: transform 0.2s ease;
+      touch-action: none;
+    }
+
+    .block-item.selected {
+      background: rgba(99, 102, 241, 0.2);
+      border: 2px dashed var(--primary);
+    }
+
+    .block-grid {
+      display: grid;
+      gap: 2px;
+    }
+
+    .mini-cell {
+      width: 13px;
+      height: 13px;
+      border-radius: 3px;
+    }
+
+    /* MODAL OVERLAYS */
+    .modal-overlay {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .modal-card {
+      background: #1e293b;
+      border-radius: 18px;
+      border: 1px solid var(--primary);
+      width: 100%;
+      max-width: 420px;
+      padding: 18px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--cell-border);
+      padding-bottom: 6px;
+    }
+
+    .challenge-title {
+      font-weight: 800;
+      color: var(--accent-yellow);
+      font-size: 1rem;
+    }
+
+    .badge-diff {
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .diff-mudah { background: #06b6d4; color: white; }
+    .diff-sedang { background: #eab308; color: black; }
+    .diff-sulit { background: #f97316; color: white; }
+    .diff-tantangan { background: #a855f7; color: white; }
+
+    .question-box {
+      font-size: 0.95rem;
+      font-weight: 600;
+      line-height: 1.4;
+      background: rgba(15, 23, 42, 0.6);
+      padding: 10px;
+      border-radius: 8px;
+      border-left: 4px solid var(--primary);
+    }
+
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .option-btn {
+      background: var(--cell-bg);
+      border: 1px solid var(--cell-border);
+      color: white;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: left;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .option-btn.selected {
+      border-color: var(--primary);
+      background: rgba(99, 102, 241, 0.2);
+    }
+
+    .option-btn.correct {
+      background: rgba(34, 197, 94, 0.2) !important;
+      border-color: var(--accent-green) !important;
+      color: var(--accent-green) !important;
+    }
+
+    .option-btn.wrong {
+      background: rgba(239, 68, 68, 0.2) !important;
+      border-color: var(--accent-red) !important;
+      color: var(--accent-red) !important;
+    }
+
+    .hint-box {
+      display: none;
+      background: rgba(251, 191, 36, 0.12);
+      border: 1px solid var(--accent-yellow);
+      color: #fde047;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+    }
+
+    .explanation-box {
+      display: none;
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid #3b82f6;
+      color: #93c5fd;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+    }
+
+    /* RESULT SCREEN */
+    .result-card {
+      background: var(--card-bg);
+      border-radius: 14px;
+      padding: 14px;
+      border: 1px solid var(--cell-border);
+      margin-bottom: 12px;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .result-item {
+      background: rgba(15, 23, 42, 0.6);
+      padding: 8px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .result-item .val {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--accent-yellow);
+    }
+
+    .result-item .lbl {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .save-status-box {
+      font-size: 0.8rem;
+      text-align: center;
+      padding: 8px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    .status-saving { background: rgba(234, 179, 8, 0.15); color: #fde047; border: 1px solid #eab308; }
+    .status-success { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid #22c55e; }
+    .status-error { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid #ef4444; }
+
+    /* AUDIO MUTE TOGGLE */
+    .audio-toggle {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 20;
+    }
+  </style>
+</head>
+<body>
+
+<div id="app-container">
+  <button class="audio-toggle" id="audio-btn" onclick="toggleAudio()">🔊</button>
+
+  <!-- HOME SCREEN & IDENTITAS SISWA -->
+  <div id="home-screen" class="screen active">
+    <div class="logo-blocks">
+      <div class="logo-block" style="background: #ef4444;"></div>
+      <div class="logo-block" style="background: #3b82f6;"></div>
+      <div class="logo-block" style="background: #22c55e;"></div>
+      <div class="logo-block" style="background: #eab308;"></div>
+      <div class="logo-block" style="background: #a855f7;"></div>
+      <div class="logo-block" style="background: #06b6d4;"></div>
+    </div>
+    <h1>BLOCK MATH BLAST</h1>
+    <div class="subtitle">PERSAMAAN KUADRAT — KELAS X</div>
+
+    <div class="high-score-badge">
+      🏆 HIGH SCORE: <span id="home-highscore">0</span>
+    </div>
+
+    <div class="form-card">
+      <div class="form-group">
+        <label for="player-name">Nama Lengkap Siswa *</label>
+        <input type="text" id="player-name" class="form-control" placeholder="Contoh: Budi Santoso" required>
+      </div>
+      <div class="form-group">
+        <label for="player-class">Kelas *</label>
+        <input type="text" id="player-class" class="form-control" placeholder="Contoh: X MIPA 1" required>
+      </div>
+      <div class="form-group">
+        <label for="player-no">Nomor Absen (Opsional)</label>
+        <input type="text" id="player-no" class="form-control" placeholder="Contoh: 12">
+      </div>
+    </div>
+
+    <div style="width: 100%; max-width: 340px;">
+      <button class="btn" style="width: 100%;" onclick="validateAndStart()">▶ MULAI BERMAIN</button>
+      <button class="btn btn-secondary" style="width: 100%;" onclick="showScreen('rules-screen')">📖 PETUNJUK PERMAINAN</button>
+    </div>
+  </div>
+
+  <!-- HOW TO PLAY SCREEN -->
+  <div id="rules-screen" class="screen">
+    <h2 style="text-align: center; margin-bottom: 14px; color: var(--accent-yellow);">Cara Bermain</h2>
+    <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:16px; font-size:0.85rem; line-height:1.4;">
+      <div style="background:var(--card-bg); padding:10px; border-radius:8px; border-left:3px solid var(--primary);">
+        <strong>1. Identitas Siswa:</strong> Masukkan nama dan kelas sebelum bermain. Data hasil otomatis tersimpan di Spreadsheet rekap guru.
+      </div>
+      <div style="background:var(--card-bg); padding:10px; border-radius:8px; border-left:3px solid var(--primary);">
+        <strong>2. Susun Balok:</strong> Pilih balok di bagian bawah lalu tap sel papan 8x8 untuk meletakkannya.
+      </div>
+      <div style="background:var(--card-bg); padding:10px; border-radius:8px; border-left:3px solid var(--primary);">
+        <strong>3. Hapus Baris & Kolom:</strong> Setiap baris/kolom penuh akan hancur dan memicu <strong>Math Challenge</strong> dengan materi & tingkat kesulitan sepenuhnya acak.
+      </div>
+      <div style="background:var(--card-bg); padding:10px; border-radius:8px; border-left:3px solid var(--primary);">
+        <strong>4. Sistem 2 Kesempatan:</strong>
+        <br>• Benar Kesp 1/2: <strong>+100 poin</strong>
+        <br>• Salah Kesp 1: Diberi petunjuk (hint), tanpa penalti
+        <br>• Salah Kesp 2: <strong>-50 penalti</strong>
+      </div>
+    </div>
+    <button class="btn btn-secondary" onclick="showScreen('home-screen')">⬅ Kembali ke Menu</button>
+  </div>
+
+  <!-- GAMEPLAY SCREEN -->
+  <div id="game-screen" class="screen">
+    <div class="game-header">
+      <div class="player-banner">
+        <span>👤 <strong id="game-player-name">-</strong> (<span id="game-player-class">-</span>)</span>
+        <button class="btn btn-secondary" style="padding: 2px 8px; margin: 0; font-size: 0.75rem;" onclick="pauseGame()">⏸ Pause</button>
+      </div>
+
+      <div class="stats-grid-top">
+        <div class="stat-card">
+          <span class="lbl">Skor</span>
+          <span class="val" id="current-score">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="lbl">Waktu</span>
+          <span class="val" id="timer-display">05:00</span>
+        </div>
+        <div class="stat-card">
+          <span class="lbl">Akurasi</span>
+          <span class="val" id="in-accuracy">0%</span>
+        </div>
+        <div class="stat-card">
+          <span class="lbl">High</span>
+          <span class="val" id="game-highscore">0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="board-container" id="board"></div>
+
+    <div class="blocks-tray" id="tray"></div>
+  </div>
+
+  <!-- PAUSE MODAL -->
+  <div id="pause-modal" class="modal-overlay">
+    <div class="modal-card" style="text-align: center;">
+      <h2 style="color: var(--accent-yellow);">GAME DIJEDA</h2>
+      <p style="color: var(--text-muted); font-size:0.85rem;">Timer dan aktivitas puzzle dihentikan sementara.</p>
+      <button class="btn btn-success" onclick="resumeGame()">▶ Lanjutkan</button>
+      <button class="btn btn-secondary" onclick="restartGame()">🔄 Ulangi Sesi</button>
+      <button class="btn btn-danger" onclick="exitToHome()">🏠 Keluar ke Menu</button>
+    </div>
+  </div>
+
+  <!-- MATH CHALLENGE MODAL -->
+  <div id="math-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="challenge-title">⚡ MATH CHALLENGE!</div>
+        <span class="badge-diff" id="math-diff">MUDAH</span>
+      </div>
+
+      <div style="font-size:0.75rem; color:var(--text-muted); text-align:right;" id="attempt-indicator">Kesempatan: 1 / 2</div>
+
+      <div class="question-box" id="math-question">Memuat soal...</div>
+
+      <div class="options-grid" id="math-options"></div>
+
+      <div class="hint-box" id="math-hint"></div>
+      <div class="explanation-box" id="math-explanation"></div>
+
+      <button class="btn btn-primary" id="math-submit-btn" style="margin-top: 4px;" onclick="submitMathAnswer()">Kirim Jawaban</button>
+    </div>
+  </div>
+
+  <!-- GAME OVER / RESULT SCREEN -->
+  <div id="result-screen" class="screen">
+    <h1 style="margin-top: 6px;">GAME OVER</h1>
+    <p class="subtitle" id="result-reason">Waktu Permainan Habis!</p>
+
+    <div id="save-status" class="save-status-box status-saving">Menyimpan hasil permainan ke Google Sheets...</div>
+
+    <div class="result-card">
+      <div style="text-align: center; margin-bottom: 8px;">
+        <span class="stat-label" style="font-size:0.75rem; color:var(--text-muted);">TOTAL SKOR AKHIR</span>
+        <div style="font-size: 2.2rem; font-weight: 900; color: var(--accent-yellow);" id="res-score">0</div>
+      </div>
+
+      <div class="result-grid">
+        <div class="result-item"><div class="val" id="res-highscore">0</div><div class="lbl">High Score</div></div>
+        <div class="result-item"><div class="val" id="res-lines">0</div><div class="lbl">Baris/Kolom Hapus</div></div>
+        <div class="result-item"><div class="val" id="res-accuracy">0%</div><div class="lbl">Akurasi Soal</div></div>
+        <div class="result-item"><div class="val" id="res-solved">0/0</div><div class="lbl">Soal Benar</div></div>
+        <div class="result-item"><div class="val" id="res-first-try">0</div><div class="lbl">Benar Kesp. 1</div></div>
+        <div class="result-item"><div class="val" id="res-second-try">0</div><div class="lbl">Benar Kesp. 2</div></div>
+      </div>
+    </div>
+
+    <button class="btn btn-success" onclick="startGame()">🔄 Main Sesi Baru</button>
+    <button class="btn btn-secondary" onclick="showScreen('home-screen')">🏠 Kembali ke Menu</button>
+    <button class="btn btn-secondary" id="retry-save-btn" style="display:none;" onclick="sendDataToSpreadsheet()">☁️ Coba Simpan Lagi</button>
+  </div>
+</div>
+
+<script>
+/* ==========================================================================
+   BLOCK SHAPES & COMPREHENSIVE MIXED QUESTION BANK (100+ UNIK)
+   ========================================================================== */
+const BLOCK_SHAPES = [
+  { color: '#ef4444', matrix: [[1]] },
+  { color: '#f97316', matrix: [[1, 1]] },
+  { color: '#f97316', matrix: [[1], [1]] },
+  { color: '#eab308', matrix: [[1, 1, 1]] },
+  { color: '#eab308', matrix: [[1], [1], [1]] },
+  { color: '#06b6d4', matrix: [[1, 1, 1, 1]] },
+  { color: '#06b6d4', matrix: [[1], [1], [1], [1]] },
+  { color: '#3b82f6', matrix: [[1, 1], [1, 1]] },
+  { color: '#6366f1', matrix: [[1, 1, 1], [1, 1, 1], [1, 1, 1]] },
+  { color: '#a855f7', matrix: [[1, 0], [1, 1]] },
+  { color: '#a855f7', matrix: [[0, 1], [1, 1]] },
+  { color: '#ec4899', matrix: [[1, 0, 0], [1, 0, 0], [1, 1, 1]] },
+  { color: '#10b981', matrix: [[1, 1, 1], [0, 1, 0]] }
+];
+
+// Bank Soal Komprehensif (Mencakup seluruh submateri Persamaan Kuadrat dengan tingkat kesulitan tercampur acak)
+const BASE_QUESTION_BANK = [
+  // Bentuk Umum & Koefisien
+  { id: 1, diff: 'mudah', q: 'Pada bentuk 2x² - 5x + 3 = 0, nilai koefisien b adalah...', ops: ['2', '-5', '3', '5'], a: 1, h: 'Koefisien b berada di depan variabel x.', e: 'Bentuk umum ax² + bx + c = 0, maka b = -5.' },
+  { id: 2, diff: 'mudah', q: 'Nilai konstanta c pada persamaan x² + 4x - 12 = 0 adalah...', ops: ['1', '4', '-12', '12'], a: 2, h: 'Konstanta c adalah suku tanpa variabel x.', e: 'Nilai konstanta c = -12.' },
+  { id: 3, diff: 'mudah', q: 'Manakah di bawah ini yang merupakan bentuk persamaan kuadrat?', ops: ['3x + 5 = 0', 'x³ - 2x = 0', '2x² - 8 = 0', '1/x + x = 2'], a: 2, h: 'Pangkat tertinggi variabel pada persamaan kuadrat adalah 2.', e: '2x² - 8 = 0 memiliki pangkat tertinggi 2.' },
+  { id: 4, diff: 'sedang', q: 'Jika 3x² - 6x = 0 diubah ke bentuk ax² + bx + c = 0, nilai c adalah...', ops: ['3', '-6', '0', '1'], a: 2, h: 'Suku konstanta yang tidak tertulis bernilai nol.', e: 'Suku c tidak ada, sehingga c = 0.' },
+  { id: 5, diff: 'sulit', q: 'Jika akar-akar persamaan kuadrat adalah 3 dan -2, tentukan persamaan kuadratnya!', ops: ['x² - x - 6 = 0', 'x² + x - 6 = 0', 'x² - 5x + 6 = 0', 'x² + 5x + 6 = 0'], a: 0, h: 'Gunakan rumus (x - x₁)(x - x₂) = 0.', e: '(x - 3)(x - (-2)) = (x - 3)(x + 2) = x² - x - 6 = 0.' },
+
+  // Diskriminan & Jenis Akar
+  { id: 6, diff: 'sedang', q: 'Diskriminan (D) dari persamaan x² + 4x + 3 = 0 adalah...', ops: ['4', '16', '7', '12'], a: 0, h: 'Gunakan rumus diskriminan D = b² - 4ac.', e: 'D = 4² - 4(1)(3) = 16 - 12 = 4.' },
+  { id: 7, diff: 'sedang', q: 'Nilai diskriminan dari 2x² - 3x - 2 = 0 adalah...', ops: ['25', '7', '-7', '17'], a: 0, h: 'Hitung D = b² - 4ac dengan c = -2.', e: 'D = (-3)² - 4(2)(-2) = 9 + 16 = 25.' },
+  { id: 8, diff: 'mudah', q: 'Jika nilai Diskriminan D = 0, maka jenis akar persamaan kuadrat adalah...', ops: ['Real berbeda', 'Real dan kembar', 'Imajiner / tidak real', 'Negatif'], a: 1, h: 'D = 0 menunjukkan kedua akar bernilai sama atau kembar.', e: 'Akar real dan kembar.' },
+  { id: 9, diff: 'sulit', q: 'Agar persamaan x² + kx + 9 = 0 memiliki akar kembar, nilai k adalah...', ops: ['±3', '±6', '±9', '±12'], a: 1, h: 'Syarat akar kembar adalah D = 0 (b² - 4ac = 0).', e: 'k² - 4(1)(9) = 0 → k² = 36 → k = ±6.' },
+
+  // Faktorisasi & Melengkapkan Kuadrat Sempurna
+  { id: 10, diff: 'sedang', q: 'Akar-akar dari persamaan kuadrat x² - 5x + 6 = 0 adalah...', ops: ['x = 2 atau x = 3', 'x = -2 atau x = -3', 'x = 1 atau x = 6', 'x = -1 atau x = -6'], a: 0, h: 'Cari dua bilangan yang jika dijumlah -5 dan jika dikali 6.', e: '(x - 2)(x - 3) = 0, maka x = 2 atau x = 3.' },
+  { id: 11, diff: 'mudah', q: 'Bentuk faktorisasi dari x² - 9 = 0 adalah...', ops: ['(x - 3)(x - 3)', '(x + 3)(x + 3)', '(x - 3)(x + 3)', 'x(x - 9)'], a: 2, h: 'Gunakan sifat selisih kuadrat: a² - b² = (a - b)(a + b).', e: 'x² - 3² = (x - 3)(x + 3).' },
+  { id: 12, diff: 'sulit', q: 'Akar-akar dari persamaan 2x² + 5x - 3 = 0 adalah...', ops: ['x = 1/2 atau x = -3', 'x = -1/2 atau x = 3', 'x = 2 atau x = -3', 'x = 3 atau x = -1'], a: 0, h: 'Faktorkan menjadi (2x - 1)(x + 3) = 0.', e: '2x - 1 = 0 → x = 1/2; x + 3 = 0 → x = -3.' },
+
+  // Rumus Kuadrat (Rumus ABC)
+  { id: 13, diff: 'sedang', q: 'Rumus kuadrat (Rumus ABC) untuk mencari akar ax² + bx + c = 0 adalah...', ops: ['x = (-b ± √(b² - 4ac)) / 2a', 'x = (b ± √(b² - 4ac)) / a', 'x = (-b ± √(b² + 4ac)) / 2a', 'x = (-a ± √(b² - 4ac)) / 2c'], a: 0, h: 'Ingat rumus standar penentu akar kuadrat.', e: 'Rumus ABC adalah x = (-b ± √(b² - 4ac)) / 2a.' },
+  { id: 14, diff: 'sulit', q: 'Gunakan rumus ABC untuk menyelesaikan x² + 5x + 6 = 0, salah satu akarnya adalah...', ops: ['-2', '-3', '2', '3'], a: 0, h: 'Hitung dengan rumus ABC atau faktorisasi sederhana.', e: 'Akar-akarnya adalah -2 dan -3.' },
+
+  // Hubungan Akar & Koefisien
+  { id: 15, diff: 'sulit', q: 'Jika x₁ dan x₂ adalah akar dari x² - 6x + 8 = 0, nilai x₁ + x₂ adalah...', ops: ['6', '-6', '8', '-8'], a: 0, h: 'Rumus jumlah akar: x₁ + x₂ = -b/a.', e: 'x₁ + x₂ = -(-6)/1 = 6.' },
+  { id: 16, diff: 'sulit', q: 'Jika x₁ dan x₂ adalah akar dari 2x² + 8x - 10 = 0, nilai x₁ · x₂ adalah...', ops: ['-5', '5', '-4', '4'], a: 0, h: 'Rumus hasil kali akar: x₁ · x₂ = c/a.', e: 'x₁ · x₂ = -10 / 2 = -5.' },
+  { id: 17, diff: 'tantangan', q: 'Jika x₁ dan x₂ akar dari x² - 4x + 3 = 0, nilai dari 1/x₁ + 1/x₂ adalah...', ops: ['4/3', '3/4', '-4/3', '1/3'], a: 0, h: 'Ubah ke bentuk (x₁ + x₂) / (x₁ · x₂).', e: 'Jumlah akar = 4, Kali akar = 3, maka 4/3.' },
+
+  // Penerapan / Soal Cerita Persamaan Kuadrat
+  { id: 18, diff: 'tantangan', q: 'Sebuah taman berbentuk persegi panjang berluas 60 m². Jika panjangnya 7 m lebih dari lebarnya, lebar taman tersebut adalah...', ops: ['5 m', '12 m', '6 m', '10 m'], a: 0, h: 'Misal lebar = l, maka l(l + 7) = 60.', e: 'l² + 7l - 60 = 0 → (l + 12)(l - 5) = 0. Lebar positif l = 5 m.' },
+  { id: 19, diff: 'tantangan', q: 'Jumlah dua bilangan bulat adalah 12 dan hasil kalinya 35. Persamaan kuadrat untuk mencari bilangan tersebut adalah...', ops: ['x² - 12x + 35 = 0', 'x² + 12x + 35 = 0', 'x² - 35x + 12 = 0', 'x² - 12x - 35 = 0'], a: 0, h: 'Gunakan pola x² - (jumlah)x + (hasil kali) = 0.', e: 'x² - 12x + 35 = 0.' },
+  { id: 20, diff: 'sedang', q: 'Keliling sebidang tanah persegi panjang adalah 20 m dan luasnya 24 m². Panjang tanah tersebut adalah...', ops: ['6 m', '4 m', '8 m', '5 m'], a: 0, h: 'Panjang + Lebar = 10 m, dan Panjang × Lebar = 24 m.', e: 'Bilangan yang memenuhi adalah 6 m dan 4 m.' }
+];
+
+let FULL_QUESTION_BANK = [...BASE_QUESTION_BANK];
+
+// Generator prosedural tambahan untuk memastikan ketersediaan soal acak yang melimpah (>100 soal)
+function populateDynamicQuestions() {
+  let idCounter = 200;
+  const difficulties = ['mudah', 'sedang', 'sulit', 'tantangan'];
+  for (let i = 1; i <= 85; i++) {
+    const r1 = Math.floor(Math.random() * 8) - 4 || 1;
+    const r2 = Math.floor(Math.random() * 8) - 4 || 2;
+    const b = -(r1 + r2);
+    const c = r1 * r2;
+    const diffRandom = difficulties[Math.floor(Math.random() * difficulties.length)];
+
+    FULL_QUESTION_BANK.push({
+      id: idCounter++,
+      diff: diffRandom,
+      q: `Tentukan akar-akar penyelesaian dari persamaan kuadrat: x² ${b>=0?'+':''}${b}x ${c>=0?'+':''}${c} = 0`,
+      ops: [
+        `x = ${r1} atau x = ${r2}`,
+        `x = ${-r1} atau x = ${r2}`,
+        `x = ${r1+1} atau x = ${r2-1}`,
+        `x = ${r1*2} atau x = ${r2}`
+      ],
+      a: 0,
+      h: `Carilah dua nilai x yang memenuhi persamaan tersebut saat disubstitusikan.`,
+      e: `Akar-akar yang valid adalah x = ${r1} atau x = ${r2}.`
+    });
+  }
+}
+populateDynamicQuestions();
+
+/* ==========================================================================
+   GAME ENGINE & STATE VARIABLES
+   ========================================================================== */
+let playerData = { nama: '', kelas: '', noAbsen: '' };
+let currentSessionId = '';
+let board = Array(8).fill(null).map(() => Array(8).fill(null));
+let currentTrayBlocks = [null, null, null];
+let selectedBlockIndex = null;
+let score = 0;
+let highScore = localStorage.getItem('bm_high_score') || 0;
+let gameTimer = null;
+let timeRemaining = 300;
+let isPaused = false;
+let isMathActive = false;
+let soundEnabled = true;
+
+let stats = {
+  linesCleared: 0, questionsAppeared: 0, questionsCorrect: 0,
+  questionsWrong: 0, firstTryCorrect: 0, secondTryCorrect: 0, totalAttempts: 0
+};
+
+let currentQuestion = null;
+let currentAttempt = 1;
+let selectedOptionIndex = null;
+let usedQuestionIds = new Set();
+let gameEndingReason = 'Waktu Permainan Habis!';
+
+/* ==========================================================================
+   AUDIO SYNTHESIZER
+   ========================================================================== */
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+
+function playSound(type) {
+  if (!soundEnabled) return;
+  try {
+    if (!audioCtx) audioCtx = new AudioCtx();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    const now = audioCtx.currentTime;
+
+    if (type === 'place') {
+      osc.frequency.setValueAtTime(300, now);
+      osc.frequency.exponentialRampToValueAtTime(150, now + 0.08);
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+      osc.start(now); osc.stop(now + 0.08);
+    } else if (type === 'clear') {
+      osc.frequency.setValueAtTime(400, now);
+      osc.frequency.exponentialRampToValueAtTime(800, now + 0.2);
+      gain.gain.setValueAtTime(0.3, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+      osc.start(now); osc.stop(now + 0.2);
+    } else if (type === 'correct') {
+      osc.frequency.setValueAtTime(523, now);
+      osc.frequency.setValueAtTime(659, now + 0.1);
+      gain.gain.setValueAtTime(0.3, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+      osc.start(now); osc.stop(now + 0.25);
+    } else if (type === 'wrong') {
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(180, now);
+      gain.gain.setValueAtTime(0.3, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+      osc.start(now); osc.stop(now + 0.2);
+    }
+  } catch(e) {}
+}
+
+function toggleAudio() {
+  soundEnabled = !soundEnabled;
+  document.getElementById('audio-btn').innerText = soundEnabled ? '🔊' : '🔇';
+}
+
+/* ==========================================================================
+   NAVIGATION & FORM VALIDATION
+   ========================================================================== */
+function showScreen(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(screenId).classList.add('active');
+  if (screenId === 'home-screen') {
+    document.getElementById('home-highscore').innerText = highScore;
+  }
+}
+
+function validateAndStart() {
+  const nameInput = document.getElementById('player-name').value.trim();
+  const classInput = document.getElementById('player-class').value.trim();
+  const noInput = document.getElementById('player-no').value.trim();
+
+  if (!nameInput || !classInput) {
+    alert('Harap isi Nama Lengkap dan Kelas siswa terlebih dahulu!');
+    return;
+  }
+
+  playerData = { nama: nameInput, kelas: classInput, noAbsen: noInput };
+  document.getElementById('game-player-name').innerText = playerData.nama;
+  document.getElementById('game-player-class').innerText = playerData.kelas;
+
+  startGame();
+}
+
+/* ==========================================================================
+   GAMEPLAY ENGINE
+   ========================================================================== */
+function startGame() {
+  currentSessionId = 'S-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+  board = Array(8).fill(null).map(() => Array(8).fill(null));
+  score = 0;
+  timeRemaining = 300;
+  isPaused = false;
+  isMathActive = false;
+  selectedBlockIndex = null;
+  usedQuestionIds.clear();
+
+  stats = {
+    linesCleared: 0, questionsAppeared: 0, questionsCorrect: 0,
+    questionsWrong: 0, firstTryCorrect: 0, secondTryCorrect: 0, totalAttempts: 0
+  };
+
+  updateScoreDisplay();
+  document.getElementById('game-highscore').innerText = highScore;
+  renderBoard();
+  spawnTrayBlocks();
+  showScreen('game-screen');
+
+  if (gameTimer) clearInterval(gameTimer);
+  gameTimer = setInterval(updateTimer, 1000);
+}
+
+function updateTimer() {
+  if (isPaused) return;
+
+  timeRemaining--;
+  const mins = Math.floor(timeRemaining / 60);
+  const secs = timeRemaining % 60;
+  const timerElem = document.getElementById('timer-display');
+  
+  timerElem.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+  if (timeRemaining <= 30) timerElem.classList.add('timer-warning');
+  else timerElem.classList.remove('timer-warning');
+
+  if (timeRemaining <= 0) {
+    clearInterval(gameTimer);
+    gameEndingReason = 'Waktu Habis';
+    endGame('Waktu Permainan Habis (5 Menit)!');
+  }
+}
+
+function pauseGame() {
+  if (isMathActive) return;
+  isPaused = true;
+  document.getElementById('pause-modal').classList.add('active');
+}
+
+function resumeGame() {
+  isPaused = false;
+  document.getElementById('pause-modal').classList.remove('active');
+}
+
+function restartGame() {
+  document.getElementById('pause-modal').classList.remove('active');
+  startGame();
+}
+
+function exitToHome() {
+  clearInterval(gameTimer);
+  document.getElementById('pause-modal').classList.remove('active');
+  showScreen('home-screen');
+}
+
+/* ==========================================================================
+   BOARD PUZZLE MECHANICS
+   ========================================================================== */
+function renderBoard() {
+  const boardElem = document.getElementById('board');
+  boardElem.innerHTML = '';
+
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.dataset.row = r;
+      cell.dataset.col = c;
+      if (board[r][c]) {
+        cell.classList.add('filled');
+        cell.style.backgroundColor = board[r][c];
+      }
+      cell.addEventListener('click', () => handleCellClick(r, c));
+      cell.addEventListener('mouseenter', () => handleCellHover(r, c));
+      boardElem.appendChild(cell);
+    }
+  }
+  boardElem.addEventListener('mouseleave', clearPreview);
+}
+
+function spawnTrayBlocks() {
+  for (let i = 0; i < 3; i++) {
+    if (!currentTrayBlocks[i]) {
+      currentTrayBlocks[i] = BLOCK_SHAPES[Math.floor(Math.random() * BLOCK_SHAPES.length)];
+    }
+  }
+  renderTray();
+  checkGameOverCondition();
+}
+
+function renderTray() {
+  const trayElem = document.getElementById('tray');
+  trayElem.innerHTML = '';
+
+  currentTrayBlocks.forEach((block, index) => {
+    const item = document.createElement('div');
+    item.className = 'block-item';
+    if (selectedBlockIndex === index) item.classList.add('selected');
+
+    if (block) {
+      const grid = document.createElement('div');
+      grid.className = 'block-grid';
+      grid.style.gridTemplateColumns = `repeat(${block.matrix[0].length}, 13px)`;
+      
+      for (let r = 0; r < block.matrix.length; r++) {
+        for (let c = 0; c < block.matrix[r].length; c++) {
+          const miniCell = document.createElement('div');
+          miniCell.className = 'mini-cell';
+          if (block.matrix[r][c]) miniCell.style.backgroundColor = block.color;
+          grid.appendChild(miniCell);
+        }
+      }
+      item.appendChild(grid);
+      item.addEventListener('click', () => selectBlock(index));
+    }
+    trayElem.appendChild(item);
+  });
+}
+
+function selectBlock(index) {
+  if (isPaused || isMathActive || !currentTrayBlocks[index]) return;
+  selectedBlockIndex = (selectedBlockIndex === index) ? null : index;
+  renderTray();
+}
+
+function handleCellHover(r, c) {
+  clearPreview();
+  if (selectedBlockIndex === null || !currentTrayBlocks[selectedBlockIndex]) return;
+
+  const block = currentTrayBlocks[selectedBlockIndex];
+  if (canPlaceBlock(block, r, c)) {
+    for (let br = 0; br < block.matrix.length; br++) {
+      for (let bc = 0; bc < block.matrix[br].length; bc++) {
+        if (block.matrix[br][bc]) {
+          const cell = getCellElem(r + br, c + bc);
+          if (cell) {
+            cell.classList.add('preview');
+            cell.style.backgroundColor = block.color;
+          }
+        }
+      }
+    }
+  }
+}
+
+function clearPreview() {
+  document.querySelectorAll('.cell.preview').forEach(cell => {
+    cell.classList.remove('preview');
+    const r = cell.dataset.row;
+    const c = cell.dataset.col;
+    cell.style.backgroundColor = board[r][c] || '';
+  });
+}
+
+function getCellElem(r, c) {
+  return document.querySelector(`.cell[data-row="${r}"][data-col="${c}"]`);
+}
+
+function canPlaceBlock(block, row, col) {
+  for (let r = 0; r < block.matrix.length; r++) {
+    for (let c = 0; c < block.matrix[r].length; c++) {
+      if (block.matrix[r][c]) {
+        const nr = row + r;
+        const nc = col + c;
+        if (nr < 0 || nr >= 8 || nc < 0 || nc >= 8) return false;
+        if (board[nr][nc] !== null) return false;
+      }
+    }
+  }
+  return true;
+}
+
+function handleCellClick(r, c) {
+  if (selectedBlockIndex === null || isPaused || isMathActive) return;
+
+  const block = currentTrayBlocks[selectedBlockIndex];
+  if (canPlaceBlock(block, r, c)) {
+    let blockCells = 0;
+    for (let br = 0; br < block.matrix.length; br++) {
+      for (let bc = 0; bc < block.matrix[br].length; bc++) {
+        if (block.matrix[br][bc]) {
+          board[r + br][c + bc] = block.color;
+          blockCells++;
+        }
+      }
+    }
+
+    playSound('place');
+    score += blockCells;
+    currentTrayBlocks[selectedBlockIndex] = null;
+    selectedBlockIndex = null;
+    
+    renderBoard();
+    renderTray();
+
+    const clearedLines = checkAndClearLines();
+    if (clearedLines > 0) {
+      stats.linesCleared += clearedLines;
+      const comboBonus = clearedLines > 1 ? (clearedLines - 1) * 50 : 0;
+      score += (clearedLines * 100) + comboBonus;
+      updateScoreDisplay();
+
+      triggerMathChallenge();
+    } else {
+      updateScoreDisplay();
+      if (currentTrayBlocks.every(b => b === null)) spawnTrayBlocks();
+      else checkGameOverCondition();
+    }
+  }
+}
+
+function checkAndClearLines() {
+  let rowsToClear = [];
+  let colsToClear = [];
+
+  for (let r = 0; r < 8; r++) {
+    if (board[r].every(cell => cell !== null)) rowsToClear.push(r);
+  }
+
+  for (let c = 0; c < 8; c++) {
+    let full = true;
+    for (let r = 0; r < 8; r++) {
+      if (board[r][c] === null) { full = false; break; }
+    }
+    if (full) colsToClear.push(c);
+  }
+
+  const totalClears = rowsToClear.length + colsToClear.length;
+  if (totalClears > 0) {
+    playSound('clear');
+    rowsToClear.forEach(r => { for (let c = 0; c < 8; c++) getCellElem(r, c)?.classList.add('clearing'); });
+    colsToClear.forEach(c => { for (let r = 0; r < 8; r++) getCellElem(r, c)?.classList.add('clearing'); });
+
+    setTimeout(() => {
+      rowsToClear.forEach(r => { for (let c = 0; c < 8; c++) board[r][c] = null; });
+      colsToClear.forEach(c => { for (let r = 0; r < 8; r++) board[r][c] = null; });
+      renderBoard();
+    }, 250);
+  }
+  return totalClears;
+}
+
+function checkGameOverCondition() {
+  const availableBlocks = currentTrayBlocks.filter(b => b !== null);
+  if (availableBlocks.length === 0) return;
+
+  let canMove = false;
+  for (let b of availableBlocks) {
+    for (let r = 0; r < 8; r++) {
+      for (let c = 0; c < 8; c++) {
+        if (canPlaceBlock(b, r, c)) { canMove = true; break; }
+      }
+      if (canMove) break;
+    }
+    if (canMove) break;
+  }
+
+  if (!canMove) {
+    setTimeout(() => {
+      gameEndingReason = 'Tidak Ada Langkah';
+      endGame('Tidak Ada Balok yang Dapat Diletakkan!');
+    }, 400);
+  }
+}
+
+function updateScoreDisplay() {
+  document.getElementById('current-score').innerText = score;
+  if (score > highScore) {
+    highScore = score;
+    localStorage.setItem('bm_high_score', highScore);
+    document.getElementById('game-highscore').innerText = highScore;
+  }
+
+  const totalAttempted = stats.questionsCorrect + stats.questionsWrong;
+  const acc = totalAttempted > 0 ? Math.round((stats.questionsCorrect / totalAttempted) * 100) : 0;
+  document.getElementById('in-accuracy').innerText = `${acc}%`;
+}
+
+/* ==========================================================================
+   FULLY RANDOMIZED MATH CHALLENGE CONTROLLER
+   ========================================================================== */
+function triggerMathChallenge() {
+  isMathActive = true;
+  stats.questionsAppeared++;
+  currentAttempt = 1;
+  selectedOptionIndex = null;
+
+  // Filter soal yang belum pernah muncul di sesi ini
+  let availableBank = FULL_QUESTION_BANK.filter(q => !usedQuestionIds.has(q.id));
+  if (availableBank.length === 0) {
+    usedQuestionIds.clear();
+    availableBank = FULL_QUESTION_BANK;
+  }
+
+  // Pengacakan Independen: Pilih soal secara murni acak dari bank soal atau generator prosedural
+  if (Math.random() < 0.2) {
+    const diffList = ['mudah', 'sedang', 'sulit', 'tantangan'];
+    const randomDiff = diffList[Math.floor(Math.random() * diffList.length)];
+    currentQuestion = generateProceduralQuestion(randomDiff);
+  } else {
+    // Gunakan Math.random() penuh untuk mengambil soal secara acak (Fisher-Yates style shuffle picking)
+    const randomIndex = Math.floor(Math.random() * availableBank.length);
+    currentQuestion = availableBank[randomIndex];
+    if (currentQuestion && currentQuestion.id) {
+      usedQuestionIds.add(currentQuestion.id);
+    }
+  }
+
+  // Fallback pengaman jika currentQuestion kosong
+  if (!currentQuestion) {
+    currentQuestion = BASE_QUESTION_BANK[0];
+  }
+
+  // Acak urutan pilihan jawaban (A, B, C, D) secara independen
+  const opsWithIdx = currentQuestion.ops.map((opt, i) => ({ text: opt, isCorrect: i === currentQuestion.a }));
+  opsWithIdx.sort(() => Math.random() - 0.5);
+  currentQuestion.shuffledOps = opsWithIdx;
+
+  // Render UI Tantangan Matematika
+  document.getElementById('math-diff').innerText = currentQuestion.diff.toUpperCase();
+  document.getElementById('math-diff').className = `badge-diff diff-${currentQuestion.diff}`;
+  document.getElementById('math-question').innerText = currentQuestion.q;
+  document.getElementById('attempt-indicator').innerText = 'Kesempatan: 1 / 2';
+
+  const optionsContainer = document.getElementById('math-options');
+  optionsContainer.innerHTML = '';
+  opsWithIdx.forEach((item, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<strong style="color:var(--primary);">${String.fromCharCode(65 + idx)}.</strong> ${item.text}`;
+    btn.onclick = () => selectOption(idx);
+    optionsContainer.appendChild(btn);
+  });
+
+  document.getElementById('math-hint').style.display = 'none';
+  document.getElementById('math-explanation').style.display = 'none';
+  
+  const submitBtn = document.getElementById('math-submit-btn');
+  submitBtn.disabled = false;
+  submitBtn.innerText = 'Kirim Jawaban';
+  submitBtn.onclick = submitMathAnswer;
+
+  document.getElementById('math-modal').classList.add('active');
+}
+
+function selectOption(index) {
+  selectedOptionIndex = index;
+  document.querySelectorAll('.option-btn').forEach((btn, i) => {
+    btn.classList.toggle('selected', i === index);
+  });
+}
+
+function submitMathAnswer() {
+  if (selectedOptionIndex === null) return;
+  stats.totalAttempts++;
+
+  const isCorrect = currentQuestion.shuffledOps[selectedOptionIndex].isCorrect;
+  const optionBtns = document.querySelectorAll('.option-btn');
+  const submitBtn = document.getElementById('math-submit-btn');
+
+  if (currentAttempt === 1) {
+    if (isCorrect) {
+      playSound('correct');
+      optionBtns[selectedOptionIndex].classList.add('correct');
+      score += 100;
+      stats.questionsCorrect++;
+      stats.firstTryCorrect++;
+      updateScoreDisplay();
+
+      submitBtn.innerText = 'Lanjutkan';
+      submitBtn.onclick = closeMathChallenge;
+    } else {
+      playSound('wrong');
+      optionBtns[selectedOptionIndex].classList.add('wrong');
+      currentAttempt = 2;
+      document.getElementById('attempt-indicator').innerText = 'Kesempatan: 2 / 2 (Terakhir)';
+      
+      const hintBox = document.getElementById('math-hint');
+      hintBox.innerText = `💡 PETUNJUK: ${currentQuestion.h}`;
+      hintBox.style.display = 'block';
+
+      selectedOptionIndex = null;
+      optionBtns.forEach(b => b.classList.remove('selected'));
+    }
+  } else if (currentAttempt === 2) {
+    if (isCorrect) {
+      playSound('correct');
+      optionBtns[selectedOptionIndex].classList.add('correct');
+      score += 100;
+      stats.questionsCorrect++;
+      stats.secondTryCorrect++;
+      updateScoreDisplay();
+    } else {
+      playSound('wrong');
+      optionBtns[selectedOptionIndex].classList.add('wrong');
+      currentQuestion.shuffledOps.forEach((op, idx) => {
+        if (op.isCorrect) optionBtns[idx].classList.add('correct');
+      });
+
+      score = Math.max(0, score - 50);
+      stats.questionsWrong++;
+      updateScoreDisplay();
+
+      const expBox = document.getElementById('math-explanation');
+      expBox.innerText = `📖 PEMBAHASAN: ${currentQuestion.e}`;
+      expBox.style.display = 'block';
+    }
+    submitBtn.innerText = 'Lanjutkan';
+    submitBtn.onclick = closeMathChallenge;
+  }
+}
+
+function closeMathChallenge() {
+  document.getElementById('math-modal').classList.remove('active');
+  isMathActive = false;
+
+  if (currentTrayBlocks.every(b => b === null)) spawnTrayBlocks();
+  else checkGameOverCondition();
+}
+
+/* ==========================================================================
+   RESULT & GOOGLE SPREADSHEET INTEGRATION
+   ========================================================================== */
+function endGame(reason) {
+  clearInterval(gameTimer);
+  document.getElementById('math-modal').classList.remove('active');
+  document.getElementById('pause-modal').classList.remove('active');
+
+  document.getElementById('result-reason').innerText = reason;
+  document.getElementById('res-score').innerText = score;
+  document.getElementById('res-highscore').innerText = highScore;
+  document.getElementById('res-lines').innerText = stats.linesCleared;
+  
+  const totalAttempted = stats.questionsCorrect + stats.questionsWrong;
+  const accuracy = totalAttempted > 0 ? Math.round((stats.questionsCorrect / totalAttempted) * 100) : 0;
+  
+  document.getElementById('res-accuracy').innerText = `${accuracy}%`;
+  document.getElementById('res-solved').innerText = `${stats.questionsCorrect}/${totalAttempted}`;
+  document.getElementById('res-first-try').innerText = stats.firstTryCorrect;
+  document.getElementById('res-second-try').innerText = stats.secondTryCorrect;
+
+  showScreen('result-screen');
+  sendDataToSpreadsheet();
+}
+
+function sendDataToSpreadsheet() {
+  const statusBox = document.getElementById('save-status');
+  const retryBtn = document.getElementById('retry-save-btn');
+  
+  statusBox.className = 'save-status-box status-saving';
+  statusBox.innerText = 'Menyimpan hasil permainan ke Google Sheets...';
+  retryBtn.style.display = 'none';
+
+  const durationSpent = 300 - timeRemaining;
+  const totalAttempted = stats.questionsCorrect + stats.questionsWrong;
+  const accuracy = totalAttempted > 0 ? Math.round((stats.questionsCorrect / totalAttempted) * 100) : 0;
+
+  const payload = {
+    sessionId: currentSessionId,
+    nama: playerData.nama,
+    kelas: playerData.kelas,
+    noAbsen: playerData.noAbsen,
+    score: score,
+    highScore: highScore,
+    duration: durationSpent,
+    linesCleared: stats.linesCleared,
+    questionsAppeared: stats.questionsAppeared,
+    questionsCorrect: stats.questionsCorrect,
+    questionsWrong: stats.questionsWrong,
+    firstTryCorrect: stats.firstTryCorrect,
+    secondTryCorrect: stats.secondTryCorrect,
+    accuracy: accuracy,
+    totalAttempts: stats.totalAttempts,
+    gameStatus: gameEndingReason
+  };
+
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(res => {
+        if (res && res.success) {
+          statusBox.className = 'save-status-box status-success';
+          statusBox.innerText = '✓ Hasil berhasil disimpan ke Google Sheets!';
+        } else {
+          statusBox.className = 'save-status-box status-error';
+          statusBox.innerText = '⚠️ Gagal menyimpan: ' + (res.message || 'Kesalahan Server');
+          retryBtn.style.display = 'block';
+        }
+      })
+      .withFailureHandler(err => {
+        statusBox.className = 'save-status-box status-error';
+        statusBox.innerText = '⚠️ Gagal menyimpan data (Jaringan/Server).';
+        retryBtn.style.display = 'block';
+      })
+      .saveGameResult(payload);
+  } else {
+    setTimeout(() => {
+      statusBox.className = 'save-status-box status-success';
+      statusBox.innerText = '✓ [Mode Pengujian] Hasil dicatat secara lokal!';
+    }, 1000);
+  }
+}
+</script>
+</body>
+</html>

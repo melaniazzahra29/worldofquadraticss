@@ -1,0 +1,3346 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quadratic Space — Belajar • Jelajahi • Selesaikan!</title>
+  <!-- Google Fonts: Fredoka/Nunito untuk judul playful, Poppins untuk isi yang jelas -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- MathJax untuk Notasi Matematika -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+  <style>
+    :root {
+      /* Palet Warna Cute Playful Academic / Kawaii Learning Space */
+      --sage-dark: #5B7B65;
+      --sage-main: #7EA189;
+      --sage-soft: #B5CBB7;
+      --sage-light: #E2ECE4;
+      --sage-tint: #F1F6F2;
+      --cream: #FDFBF7;
+      --off-white: #F8F6F0;
+      --pastel-yellow: #FFF3C4;
+      --yellow-accent: #F4D06F;
+      --peach-soft: #FFD6C9;
+      --peach-accent: #F4978E;
+      --text-main: #2F3E34;
+      --text-muted: #5C6F62;
+      --white: #FFFFFF;
+      --border-soft: #D5E2D7;
+      --shadow-card: 0 8px 24px rgba(91, 123, 101, 0.10);
+      --shadow-hover: 0 12px 28px rgba(91, 123, 101, 0.18);
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --radius-pill: 999px;
+      --transition: all 0.28s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--cream);
+      color: var(--text-main);
+      line-height: 1.6;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(var(--sage-soft) 1.2px, transparent 1.2px),
+        radial-gradient(var(--yellow-accent) 1.2px, var(--cream) 1.2px);
+      background-size: 40px 40px;
+      background-position: 0 0, 20px 20px;
+    }
+
+    h1, h2, h3, h4, .font-playful {
+      font-family: 'Fredoka', 'Nunito', sans-serif;
+      letter-spacing: 0.3px;
+    }
+
+    /* Dekorasi Doodle Latar Belakang */
+    .floating-doodles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .doodle {
+      position: absolute;
+      opacity: 0.22;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      color: var(--sage-dark);
+      user-select: none;
+      animation: floatSlow 7s ease-in-out infinite;
+    }
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-12px) rotate(4deg); }
+    }
+
+    /* Layout Utama: Sidebar + Konten */
+    .app-container {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Sidebar Desktop */
+    .sidebar {
+      width: 270px;
+      background: var(--white);
+      border-right: 3px dashed var(--sage-soft);
+      padding: 24px 18px;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+      box-shadow: 4px 0 20px rgba(91, 123, 101, 0.06);
+      transition: transform 0.3s ease;
+    }
+
+    .brand-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: linear-gradient(135deg, var(--sage-light), var(--pastel-yellow));
+      border-radius: var(--radius-lg);
+      border: 2px solid var(--sage-soft);
+      margin-bottom: 22px;
+    }
+
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      background: var(--white);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--sage-dark);
+      line-height: 1.2;
+    }
+
+    .brand-tagline {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.93rem;
+      color: var(--text-muted);
+      transition: var(--transition);
+      border: 2px solid transparent;
+    }
+
+    .nav-item:hover {
+      background: var(--sage-tint);
+      color: var(--sage-dark);
+      transform: translateX(4px);
+    }
+
+    .nav-item.active {
+      background: var(--sage-main);
+      color: var(--white);
+      border-color: var(--sage-dark);
+      box-shadow: 0 4px 12px rgba(126, 161, 137, 0.35);
+    }
+
+    .nav-icon {
+      font-size: 1.2rem;
+      width: 26px;
+      text-align: center;
+    }
+
+    .sidebar-mini-progress {
+      background: var(--off-white);
+      border: 2px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      padding: 14px;
+      margin-top: 16px;
+    }
+
+    .progress-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--sage-dark);
+      margin-bottom: 6px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 12px;
+      background: var(--sage-light);
+      border-radius: var(--radius-pill);
+      overflow: hidden;
+      border: 1px solid var(--sage-soft);
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--sage-main), var(--yellow-accent));
+      border-radius: var(--radius-pill);
+      transition: width 0.5s ease;
+    }
+
+    /* Mobile Header & Drawer */
+    .mobile-header {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      background: var(--white);
+      border-bottom: 2px solid var(--sage-light);
+      padding: 0 18px;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 110;
+    }
+
+    .hamburger-btn {
+      background: var(--sage-light);
+      border: 2px solid var(--sage-soft);
+      border-radius: 12px;
+      width: 42px;
+      height: 42px;
+      font-size: 1.3rem;
+      cursor: pointer;
+      color: var(--sage-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(47, 62, 52, 0.35);
+      z-index: 95;
+    }
+
+    /* Main Content Area */
+    .main-content {
+      flex: 1;
+      margin-left: 270px;
+      padding: 30px 36px 60px;
+      max-width: 1280px;
+    }
+
+    .page-section {
+      display: none;
+      animation: fadeSlideUp 0.35s ease forwards;
+    }
+
+    .page-section.active {
+      display: block;
+    }
+
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Komponen Kartu & Sticky Notes */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      border: 2.5px solid var(--border-soft);
+      padding: 24px;
+      box-shadow: var(--shadow-card);
+      position: relative;
+      transition: var(--transition);
+    }
+
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--sage-main);
+    }
+
+    .card-corner-star {
+      position: absolute;
+      top: -12px;
+      right: 18px;
+      background: var(--pastel-yellow);
+      border: 2px solid var(--yellow-accent);
+      border-radius: var(--radius-pill);
+      padding: 3px 12px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #7A5C12;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+    }
+
+    .sticky-note {
+      background: var(--pastel-yellow);
+      border: 2px dashed #E5C158;
+      border-radius: 16px;
+      padding: 16px 20px;
+      position: relative;
+      box-shadow: 3px 5px 0px rgba(229, 193, 88, 0.35);
+      transform: rotate(-0.6deg);
+      margin: 14px 0;
+    }
+
+    .sticky-note.peach {
+      background: var(--peach-soft);
+      border-color: var(--peach-accent);
+      box-shadow: 3px 5px 0px rgba(244, 151, 142, 0.3);
+      transform: rotate(0.5deg);
+    }
+
+    .sticky-note.sage {
+      background: var(--sage-light);
+      border-color: var(--sage-main);
+      box-shadow: 3px 5px 0px rgba(126, 161, 137, 0.25);
+      transform: rotate(0deg);
+    }
+
+    /* Tombol Playful */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 22px;
+      border-radius: var(--radius-pill);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border: 2.5px solid transparent;
+      transition: var(--transition);
+      text-decoration: none;
+      user-select: none;
+    }
+
+    .btn:active {
+      transform: scale(0.96);
+    }
+
+    .btn-primary {
+      background: var(--sage-main);
+      color: var(--white);
+      border-color: var(--sage-dark);
+      box-shadow: 0 4px 0 var(--sage-dark);
+    }
+
+    .btn-primary:hover {
+      background: var(--sage-dark);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: var(--pastel-yellow);
+      color: #6B5010;
+      border-color: var(--yellow-accent);
+      box-shadow: 0 4px 0 #D9B24C;
+    }
+
+    .btn-secondary:hover {
+      background: var(--yellow-accent);
+      transform: translateY(-2px);
+    }
+
+    .btn-peach {
+      background: var(--peach-soft);
+      color: #7D352E;
+      border-color: var(--peach-accent);
+      box-shadow: 0 4px 0 #D97A70;
+    }
+
+    .btn-outline {
+      background: var(--white);
+      color: var(--sage-dark);
+      border-color: var(--sage-soft);
+    }
+
+    .btn-outline:hover {
+      background: var(--sage-tint);
+      border-color: var(--sage-main);
+    }
+
+    .btn-sm {
+      padding: 8px 16px;
+      font-size: 0.85rem;
+    }
+
+    /* Maskot & Speech Bubble */
+    .mascot-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--white);
+      border: 2.5px solid var(--sage-soft);
+      border-radius: var(--radius-xl);
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .mascot-avatar {
+      width: 78px;
+      height: 78px;
+      flex-shrink: 0;
+      animation: bounceGentle 3s ease-in-out infinite;
+    }
+
+    @keyframes bounceGentle {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    .speech-bubble {
+      background: var(--sage-tint);
+      border: 2px solid var(--sage-soft);
+      border-radius: 18px;
+      padding: 12px 18px;
+      position: relative;
+      flex: 1;
+      font-size: 0.93rem;
+    }
+
+    .speech-bubble::before {
+      content: '';
+      position: absolute;
+      left: -10px;
+      top: 50%;
+      transform: translateY(-50%);
+      border-width: 8px 10px 8px 0;
+      border-style: solid;
+      border-color: transparent var(--sage-soft) transparent transparent;
+    }
+
+    /* Hero Section Home */
+    .hero-box {
+      background: linear-gradient(135deg, var(--white) 0%, var(--sage-light) 55%, var(--pastel-yellow) 100%);
+      border: 3px solid var(--sage-soft);
+      border-radius: 28px;
+      padding: 34px;
+      display: grid;
+      grid-template-columns: 1.3fr 0.7fr;
+      gap: 24px;
+      align-items: center;
+      box-shadow: var(--shadow-card);
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: var(--peach-soft);
+      color: #82352D;
+      font-weight: 700;
+      font-size: 0.82rem;
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      border: 2px solid var(--peach-accent);
+      margin-bottom: 12px;
+    }
+
+    .hero-title {
+      font-size: 2.3rem;
+      color: var(--sage-dark);
+      line-height: 1.2;
+      margin-bottom: 10px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    /* Grid Layouts */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    /* Status Pill */
+    .status-pill {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      font-size: 0.76rem;
+      font-weight: 700;
+    }
+    .status-not-started { background: #ECEFF1; color: #546E7A; }
+    .status-in-progress { background: var(--pastel-yellow); color: #8A6508; border: 1px solid var(--yellow-accent); }
+    .status-completed { background: #D4EDDA; color: #1E6B34; border: 1px solid #8FD19E; }
+
+    /* Formula Box */
+    .formula-box {
+      background: var(--off-white);
+      border: 2.5px solid var(--sage-main);
+      border-radius: var(--radius-lg);
+      padding: 16px 22px;
+      text-align: center;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--sage-dark);
+      margin: 14px 0;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.03);
+    }
+
+    /* Step-by-Step List */
+    .step-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--sage-tint);
+      padding: 10px 16px;
+      border-radius: 12px;
+      border-left: 4px solid var(--sage-main);
+    }
+
+    .step-num {
+      width: 28px;
+      height: 28px;
+      background: var(--sage-main);
+      color: var(--white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    /* Tabs untuk Laboratorium Eksplorasi */
+    .lab-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .lab-tab {
+      padding: 10px 18px;
+      background: var(--white);
+      border: 2px solid var(--border-soft);
+      border-radius: var(--radius-pill);
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: var(--transition);
+    }
+
+    .lab-tab.active {
+      background: var(--sage-dark);
+      color: var(--white);
+      border-color: var(--sage-dark);
+    }
+
+    /* Controls & Sliders */
+    .slider-group {
+      margin-bottom: 14px;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--sage-dark);
+      cursor: pointer;
+      height: 8px;
+    }
+
+    input[type="number"], input[type="text"], select {
+      padding: 10px 14px;
+      border: 2px solid var(--sage-soft);
+      border-radius: 12px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.95rem;
+      background: var(--white);
+      color: var(--text-main);
+      width: 100%;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--sage-dark);
+    }
+
+    /* Canvas Container */
+    .canvas-wrap {
+      background: var(--white);
+      border: 2.5px solid var(--sage-soft);
+      border-radius: var(--radius-lg);
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    canvas {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+    }
+
+    /* Drag & Drop Puzzle */
+    .puzzle-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 16px 0;
+    }
+
+    .puzzle-piece {
+      background: var(--off-white);
+      border: 2.5px solid var(--sage-main);
+      border-radius: 14px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      cursor: grab;
+      user-select: none;
+      transition: var(--transition);
+    }
+
+    .puzzle-piece:hover {
+      background: var(--pastel-yellow);
+    }
+
+    .puzzle-piece.dragging {
+      opacity: 0.5;
+      border-style: dashed;
+    }
+
+    .puzzle-controls {
+      display: flex;
+      gap: 6px;
+    }
+
+    .move-btn {
+      background: var(--white);
+      border: 1.5px solid var(--sage-soft);
+      border-radius: 8px;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--sage-dark);
+    }
+
+    /* Quiz Options */
+    .quiz-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 18px;
+      background: var(--off-white);
+      border: 2px solid var(--border-soft);
+      border-radius: 14px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: var(--transition);
+      font-weight: 500;
+    }
+
+    .quiz-option:hover {
+      background: var(--sage-tint);
+      border-color: var(--sage-main);
+    }
+
+    .quiz-option.selected {
+      background: var(--pastel-yellow);
+      border-color: var(--yellow-accent);
+      font-weight: 700;
+    }
+
+    .quiz-option.correct {
+      background: #D4EDDA;
+      border-color: #28A745;
+    }
+
+    .quiz-option.wrong {
+      background: #F8D7DA;
+      border-color: #DC3545;
+    }
+
+    /* Badges */
+    .badge-card {
+      text-align: center;
+      padding: 18px 14px;
+      border-radius: var(--radius-lg);
+      border: 2px solid var(--border-soft);
+      background: var(--off-white);
+      transition: var(--transition);
+    }
+
+    .badge-card.unlocked {
+      background: linear-gradient(180deg, var(--white), var(--pastel-yellow));
+      border-color: var(--yellow-accent);
+      box-shadow: 0 6px 16px rgba(244, 208, 111, 0.3);
+    }
+
+    .badge-card.locked {
+      opacity: 0.55;
+      filter: grayscale(85%);
+    }
+
+    .badge-icon {
+      font-size: 2.4rem;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    /* Custom Modal & Toast */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(47, 62, 52, 0.45);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-backdrop.show {
+      display: flex;
+    }
+
+    .modal-box {
+      background: var(--white);
+      border: 3px solid var(--sage-main);
+      border-radius: 24px;
+      max-width: 460px;
+      width: 100%;
+      padding: 28px;
+      text-align: center;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.18);
+      animation: popIn 0.25s ease;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.88); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .toast-box {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--sage-dark);
+      color: var(--white);
+      padding: 14px 22px;
+      border-radius: var(--radius-pill);
+      font-weight: 600;
+      font-size: 0.9rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      z-index: 1000;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .toast-box.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Table styling */
+    table.styled-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      background: var(--white);
+      border-radius: 14px;
+      overflow: hidden;
+      border: 2px solid var(--sage-soft);
+    }
+
+    table.styled-table th {
+      background: var(--sage-main);
+      color: var(--white);
+      padding: 12px;
+      text-align: left;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    table.styled-table td {
+      padding: 11px 12px;
+      border-bottom: 1px solid var(--sage-light);
+    }
+
+    /* Certificate Card */
+    .cert-card {
+      background: linear-gradient(135deg, #FFFDF7 0%, #F1F6F2 50%, #FFF3C4 100%);
+      border: 4px double var(--sage-dark);
+      border-radius: 26px;
+      padding: 32px;
+      text-align: center;
+      box-shadow: 0 12px 32px rgba(91, 123, 101, 0.16);
+      margin-bottom: 24px;
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 960px) {
+      .hero-box { grid-template-columns: 1fr; text-align: center; }
+      .hero-actions { justify-content: center; }
+      .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+      .mobile-header { display: flex; }
+      .sidebar {
+        transform: translateX(-100%);
+        width: 260px;
+      }
+      .sidebar.open { transform: translateX(0); }
+      .sidebar-overlay.open { display: block; }
+      .main-content {
+        margin-left: 0;
+        padding: 84px 16px 40px;
+      }
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .hero-title { font-size: 1.8rem; }
+      .mascot-wrapper { flex-direction: column; text-align: center; }
+      .speech-bubble::before { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Background Doodles -->
+  <div class="floating-doodles" aria-hidden="true">
+    <span class="doodle" style="top:8%; left:22%; font-size:2rem;">ax² + bx + c = 0</span>
+    <span class="doodle" style="top:18%; right:8%; font-size:2.4rem;">✦</span>
+    <span class="doodle" style="top:45%; left:20%; font-size:1.8rem;">D = b² − 4ac</span>
+    <span class="doodle" style="bottom:20%; right:12%; font-size:2rem;">x₁,₂</span>
+    <span class="doodle" style="bottom:10%; left:26%; font-size:2.2rem;">✿</span>
+  </div>
+
+  <!-- Mobile Top Bar -->
+  <header class="mobile-header">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span style="font-size:1.5rem;">🌿</span>
+      <strong class="font-playful" style="color:var(--sage-dark); font-size:1.15rem;">Quadratic Space</strong>
+    </div>
+    <button class="hamburger-btn" onclick="toggleMobileMenu()" aria-label="Buka Menu">☰</button>
+  </header>
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileMenu()"></div>
+
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand-box">
+        <div class="brand-logo" id="brandMascotMini"></div>
+        <div>
+          <div class="brand-title font-playful">Quadratic Space</div>
+          <div class="brand-tagline">Belajar • Jelajahi • Selesaikan!</div>
+        </div>
+      </div>
+
+      <ul class="nav-list" id="navList">
+        <li class="nav-item active" data-page="home" onclick="navigateTo('home')">
+          <span class="nav-icon">🏡</span> Beranda
+        </li>
+        <li class="nav-item" data-page="map" onclick="navigateTo('map')">
+          <span class="nav-icon">🗺️</span> Peta Belajar
+        </li>
+        <li class="nav-item" data-page="modules" onclick="navigateTo('modules')">
+          <span class="nav-icon">📚</span> Modul Materi
+        </li>
+        <li class="nav-item" data-page="lab" onclick="navigateTo('lab')">
+          <span class="nav-icon">🧪</span> Lab Eksplorasi
+        </li>
+        <li class="nav-item" data-page="missions" onclick="navigateTo('missions')">
+          <span class="nav-icon">🎯</span> Misi Mini
+        </li>
+        <li class="nav-item" data-page="evaluation" onclick="navigateTo('evaluation')">
+          <span class="nav-icon">🏆</span> Evaluasi Akhir
+        </li>
+        <li class="nav-item" data-page="progress" onclick="navigateTo('progress')">
+          <span class="nav-icon">🌟</span> Progres Saya
+        </li>
+      </ul>
+
+      <div class="sidebar-mini-progress">
+        <div class="progress-label-row">
+          <span>Progres Belajar</span>
+          <span id="sidebarProgressPct">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="sidebarProgressBar" style="width: 0%;"></div>
+        </div>
+        <div style="font-size:0.75rem; color:var(--text-muted); margin-top:6px;" id="sidebarPointsText">
+          ✨ 0 Poin Terkumpul
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Dynamic Content -->
+    <main class="main-content">
+      <!-- 1. BERANDA -->
+      <section id="page-home" class="page-section active"></section>
+
+      <!-- 2. PETA BELAJAR -->
+      <section id="page-map" class="page-section"></section>
+
+      <!-- 3. MODUL MATERI -->
+      <section id="page-modules" class="page-section"></section>
+
+      <!-- 4. LAB EKSPLORASI -->
+      <section id="page-lab" class="page-section"></section>
+
+      <!-- 5. MISI MINI -->
+      <section id="page-missions" class="page-section"></section>
+
+      <!-- 6. EVALUASI AKHIR -->
+      <section id="page-evaluation" class="page-section"></section>
+
+      <!-- 7. PROGRES SAYA -->
+      <section id="page-progress" class="page-section"></section>
+    </main>
+  </div>
+
+  <!-- Custom Modal (Pengganti alert/confirm bawaan browser) -->
+  <div class="modal-backdrop" id="customModal">
+    <div class="modal-box">
+      <div id="modalMascot" style="width:80px; height:80px; margin:0 auto 12px;"></div>
+      <h3 id="modalTitle" style="color:var(--sage-dark); margin-bottom:8px;">Judul</h3>
+      <p id="modalBody" style="font-size:0.95rem; color:var(--text-main); margin-bottom:20px;"></p>
+      <div id="modalButtons" style="display:flex; gap:10px; justify-content:center;"></div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast-box" id="toastBox">Notifikasi</div>
+  <script>
+    // =========================================================================
+    // 1. MANAJEMEN STATE & LOCALSTORAGE
+    // =========================================================================
+    const STORAGE_KEY = 'quadratic_space_progress_v1';
+
+    const defaultState = {
+      points: 0,
+      modules: {
+        1: { status: 'not-started', quizPassed: false, labDone: false },
+        2: { status: 'not-started', quizPassed: false, labDone: false },
+        3: { status: 'not-started', quizPassed: false, labDone: false },
+        4: { status: 'not-started', quizPassed: false, labDone: false }
+      },
+      labChallenges: {
+        parabolaDown: false,
+        parabolaPosC: false,
+        discZero: false,
+        rootExplorerDone: false,
+        puzzleDone: false,
+        builderDone: false
+      },
+      missions: {
+        1: false,
+        2: false,
+        3: false,
+        4: false
+      },
+      evaluation: {
+        completed: false,
+        score: 0,
+        correctCount: 0,
+        answers: {}
+      },
+      badges: {
+        firstStep: false,
+        conceptExplorer: false,
+        discriminantMaster: false,
+        equationSolver: false,
+        quadraticChampion: false
+      }
+    };
+
+    let appState = loadState();
+    let currentPage = 'home';
+    let activeModuleId = 1;
+    let activeLabTab = 'playground';
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          return {
+            ...defaultState,
+            ...parsed,
+            modules: { ...defaultState.modules, ...(parsed.modules || {}) },
+            labChallenges: { ...defaultState.labChallenges, ...(parsed.labChallenges || {}) },
+            missions: { ...defaultState.missions, ...(parsed.missions || {}) },
+            evaluation: { ...defaultState.evaluation, ...(parsed.evaluation || {}) },
+            badges: { ...defaultState.badges, ...(parsed.badges || {}) }
+          };
+        }
+      } catch (e) {
+        console.warn('Gagal memuat localStorage:', e);
+      }
+      return JSON.parse(JSON.stringify(defaultState));
+    }
+
+    function saveState() {
+      evaluateBadges();
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+      } catch (e) {
+        console.warn('Gagal menyimpan localStorage:', e);
+      }
+      updateSidebarProgress();
+    }
+
+    function addPoints(pts) {
+      appState.points += pts;
+      saveState();
+    }
+
+    function evaluateBadges() {
+      const m = appState.modules;
+      const l = appState.labChallenges;
+      const ms = appState.missions;
+
+      // Langkah Pertama: Menyelesaikan minimal 1 aktivitas modul atau misi
+      if (m[1].quizPassed || m[1].labDone || ms[1] || l.parabolaDown) {
+        appState.badges.firstStep = true;
+      }
+      // Penjelajah Konsep: Modul 1 selesai & tantangan Taman Parabola tercapai
+      if (m[1].status === 'completed' && l.parabolaDown && l.parabolaPosC) {
+        appState.badges.conceptExplorer = true;
+      }
+      // Master Diskriminan: Modul 2 selesai & tantangan D = 0 di Lab Diskriminan tercapai
+      if (m[2].status === 'completed' && l.discZero) {
+        appState.badges.discriminantMaster = true;
+      }
+      // Pemecah Persamaan: Modul 3 selesai & Teka-Teki Langkah selesai
+      if (m[3].status === 'completed' && l.puzzleDone) {
+        appState.badges.equationSolver = true;
+      }
+      // Juara Kuadrat: Keempat modul selesai & Evaluasi Akhir nilai >= 80
+      if (
+        m[1].status === 'completed' &&
+        m[2].status === 'completed' &&
+        m[3].status === 'completed' &&
+        m[4].status === 'completed' &&
+        appState.evaluation.completed &&
+        appState.evaluation.score >= 80
+      ) {
+        appState.badges.quadraticChampion = true;
+      }
+    }
+
+    function calculateOverallProgress() {
+      let totalTasks = 9; // 4 modul + 4 misi + 1 evaluasi akhir
+      let done = 0;
+      for (let i = 1; i <= 4; i++) {
+        if (appState.modules[i].status === 'completed') done++;
+        if (appState.missions[i]) done++;
+      }
+      if (appState.evaluation.completed) done++;
+      return Math.round((done / totalTasks) * 100);
+    }
+
+    function updateSidebarProgress() {
+      const pct = calculateOverallProgress();
+      const bar = document.getElementById('sidebarProgressBar');
+      const txt = document.getElementById('sidebarProgressPct');
+      const pts = document.getElementById('sidebarPointsText');
+      if (bar) bar.style.width = pct + '%';
+      if (txt) txt.textContent = pct + '%';
+      if (pts) pts.textContent = `✨ ${appState.points} Poin Terkumpul`;
+    }
+
+    // =========================================================================
+    // 2. MASKOT SVG EKSPRESIF (PARABOLA LUCU "PARABI")
+    // =========================================================================
+    function getMascotSVG(mood = 'happy', size = 80) {
+      let eyes = '';
+      let mouth = '';
+      let extra = '';
+
+      if (mood === 'happy') {
+        eyes = `
+          <circle cx="38" cy="48" r="4.5" fill="#2F3E34"/>
+          <circle cx="62" cy="48" r="4.5" fill="#2F3E34"/>
+          <circle cx="39.5" cy="46.5" r="1.5" fill="#FFF"/>
+          <circle cx="63.5" cy="46.5" r="1.5" fill="#FFF"/>
+        `;
+        mouth = `<path d="M 43 57 Q 50 65 57 57" stroke="#2F3E34" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+        extra = `<text x="76" y="26" font-size="14">✨</text>`;
+      } else if (mood === 'thinking') {
+        eyes = `
+          <circle cx="38" cy="46" r="4" fill="#2F3E34"/>
+          <circle cx="62" cy="44" r="4" fill="#2F3E34"/>
+          <path d="M 32 39 Q 38 36 43 39" stroke="#2F3E34" stroke-width="2.5" fill="none"/>
+          <path d="M 57 36 Q 63 34 68 38" stroke="#2F3E34" stroke-width="2.5" fill="none"/>
+        `;
+        mouth = `<circle cx="52" cy="59" r="3.5" fill="#2F3E34"/>`;
+        extra = `<text x="74" y="26" font-size="14">💭</text>`;
+      } else if (mood === 'amazed') {
+        eyes = `
+          <text x="31" y="52" font-size="13">⭐</text>
+          <text x="55" y="52" font-size="13">⭐</text>
+        `;
+        mouth = `<ellipse cx="50" cy="60" rx="6" ry="7" fill="#F4978E" stroke="#2F3E34" stroke-width="2.5"/>`;
+        extra = `<text x="75" y="24" font-size="15">🎉</text>`;
+      } else if (mood === 'encourage') {
+        eyes = `
+          <path d="M 33 48 Q 38 43 43 48" stroke="#2F3E34" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M 57 48 Q 62 43 67 48" stroke="#2F3E34" stroke-width="3" fill="none" stroke-linecap="round"/>
+        `;
+        mouth = `<path d="M 44 58 Q 50 62 56 58" stroke="#2F3E34" stroke-width="2.8" fill="none" stroke-linecap="round"/>`;
+        extra = `<text x="75" y="26" font-size="14">💪</text>`;
+      }
+
+      return `
+        <svg width="${size}" height="${size}" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <!-- Lingkaran Latar Pastel -->
+          <circle cx="50" cy="50" r="46" fill="#E2ECE4" stroke="#7EA189" stroke-width="3"/>
+          <!-- Garis Koordinat Mini -->
+          <line x1="16" y1="74" x2="84" y2="74" stroke="#B5CBB7" stroke-width="2" stroke-dasharray="3,3"/>
+          <line x1="50" y1="16" x2="50" y2="84" stroke="#B5CBB7" stroke-width="2" stroke-dasharray="3,3"/>
+          <!-- Badan Karakter Parabola U -->
+          <path d="M 22 26 Q 50 96 78 26" fill="#FFF3C4" stroke="#5B7B65" stroke-width="5.5" stroke-linecap="round"/>
+          <!-- Pipi Merona -->
+          <ellipse cx="32" cy="54" rx="4.5" ry="2.8" fill="#FFD6C9"/>
+          <ellipse cx="68" cy="54" rx="4.5" ry="2.8" fill="#FFD6C9"/>
+          ${eyes}
+          ${mouth}
+          ${extra}
+        </svg>
+      `;
+    }
+
+    // =========================================================================
+    // 3. MODAL KUSTOM & NOTIFIKASI TOAST
+    // =========================================================================
+    function showModal({ title, body, mood = 'happy', buttons = [{ text: 'Oke, Mengerti!', primary: true }] }) {
+      const backdrop = document.getElementById('customModal');
+      document.getElementById('modalMascot').innerHTML = getMascotSVG(mood, 80);
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalBody').innerHTML = body;
+
+      const btnContainer = document.getElementById('modalButtons');
+      btnContainer.innerHTML = '';
+      buttons.forEach(btn => {
+        const b = document.createElement('button');
+        b.className = btn.primary ? 'btn btn-primary btn-sm' : 'btn btn-outline btn-sm';
+        b.textContent = btn.text;
+        b.onclick = () => {
+          closeModal();
+          if (btn.onClick) btn.onClick();
+        };
+        btnContainer.appendChild(b);
+      });
+
+      backdrop.classList.add('show');
+    }
+
+    function closeModal() {
+      document.getElementById('customModal').classList.remove('show');
+    }
+
+    let toastTimer;
+    function showToast(msg) {
+      const toast = document.getElementById('toastBox');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    // =========================================================================
+    // 4. NAVIGASI SPA & RENDER MATHJAX
+    // =========================================================================
+    function toggleMobileMenu() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('sidebarOverlay').classList.toggle('open');
+    }
+
+    function navigateTo(page, moduleId = null) {
+      currentPage = page;
+      if (moduleId) activeModuleId = moduleId;
+
+      document.querySelectorAll('.nav-item').forEach(el => {
+        el.classList.toggle('active', el.dataset.page === page);
+      });
+
+      document.querySelectorAll('.page-section').forEach(sec => {
+        sec.classList.remove('active');
+      });
+
+      const target = document.getElementById('page-' + page);
+      if (target) target.classList.add('active');
+
+      // Tutup menu samping di ponsel jika terbuka
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebarOverlay').classList.remove('open');
+
+      renderCurrentPage();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function typesetMath() {
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise().catch(err => console.log('MathJax:', err));
+      }
+    }
+
+    function renderCurrentPage() {
+      switch (currentPage) {
+        case 'home': renderHome(); break;
+        case 'map': renderMap(); break;
+        case 'modules': renderModule(activeModuleId); break;
+        case 'lab': renderLab(); break;
+        case 'missions': renderMissions(); break;
+        case 'evaluation': renderEvaluation(); break;
+        case 'progress': renderProgress(); break;
+      }
+      typesetMath();
+    }
+
+    // =========================================================================
+    // 5. HALAMAN 1: BERANDA
+    // =========================================================================
+    function renderHome() {
+      const pct = calculateOverallProgress();
+      const container = document.getElementById('page-home');
+      container.innerHTML = `
+        <div class="hero-box">
+          <div>
+            <span class="hero-badge">🌿 Dunia Belajar Matematika Interaktif • SMA</span>
+            <h1 class="hero-title">Selamat Datang di Quadratic Space!</h1>
+            <p style="font-weight:700; color:var(--sage-dark); font-size:1.1rem; margin-bottom:10px;">
+              ✨ Belajar • Jelajahi • Selesaikan!
+            </p>
+            <p style="color:var(--text-muted); font-size:0.96rem;">
+              Halo, Penjelajah Matematika! Di ruang belajar digital ini, kamu tidak hanya membaca rumus persamaan kuadrat, 
+              tetapi juga bebas menggeser kurva parabola, bereksperimen dengan diskriminan, menyusun teka-teki langkah penyelesaian, dan menaklukkan misi seru bersama <strong>Parabi</strong>!
+            </p>
+            <div class="hero-actions">
+              <button class="btn btn-primary" onclick="navigateTo('map')">🚀 Mulai Belajar</button>
+              <button class="btn btn-secondary" onclick="navigateTo('lab')">🧪 Jelajahi Dulu</button>
+            </div>
+          </div>
+          <div style="text-align:center;">
+            ${getMascotSVG('happy', 175)}
+            <div style="margin-top:8px; font-weight:700; color:var(--sage-dark); font-size:0.9rem;">
+              "Hai! Aku Parabi, teman belajarmu!"
+            </div>
+          </div>
+        </div>
+
+        <!-- Ringkasan Progres & Tujuan Pembelajaran -->
+        <div class="grid-2" style="margin-bottom:24px;">
+          <div class="card">
+            <span class="card-corner-star">📊 Statusmu</span>
+            <h3 style="color:var(--sage-dark); margin-bottom:10px;">Progres Petualangan Belajar</h3>
+            <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:12px;">
+              Selesaikan seluruh modul, laboratorium interaktif, dan evaluasi akhir untuk meraih gelar <strong>Juara Kuadrat</strong>!
+            </p>
+            <div class="progress-label-row">
+              <span>Kelengkapan Materi & Misi</span>
+              <span>${pct}%</span>
+            </div>
+            <div class="progress-track" style="height:16px; margin-bottom:14px;">
+              <div class="progress-fill" style="width:${pct}%;"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-weight:700; color:var(--sage-dark);">⭐ Total Poin: ${appState.points}</span>
+              <button class="btn btn-outline btn-sm" onclick="navigateTo('progress')">Lihat Detail Progres →</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="card-corner-star">🎯 Indikator Capaian</span>
+            <h3 style="color:var(--sage-dark); margin-bottom:10px;">Tujuan Pembelajaran</h3>
+            <ul style="padding-left:20px; font-size:0.9rem; color:var(--text-main); display:flex; flex-direction:column; gap:6px;">
+              <li>Menjelaskan arti dan bentuk umum persamaan kuadrat ($ax^2 + bx + c = 0$).</li>
+              <li>Menentukan akar-akar persamaan kuadrat dengan berbagai metode.</li>
+              <li>Menentukan jenis-jenis akar persamaan kuadrat berdasarkan nilai diskriminan ($D$).</li>
+              <li>Menyusun persamaan kuadrat baru dari akar-akarnya dan menentukan himpunan penyelesaian.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Ringkasan 4 Materi Utama -->
+        <h2 style="color:var(--sage-dark); margin-bottom:14px;">🗺️ Peta Materi yang Akan Dipelajari</h2>
+        <div class="grid-4">
+          <div class="card card-hover" style="cursor:pointer;" onclick="navigateTo('modules', 1)">
+            <div style="font-size:2rem; margin-bottom:8px;">📐</div>
+            <h4 style="color:var(--sage-dark);">01. Bentuk Umum & Grafik</h4>
+            <p style="font-size:0.84rem; color:var(--text-muted); margin-top:6px;">
+              Mengenal $ax^2 + bx + c = 0$ serta pengaruh nilai $a$, $b$, dan $c$ pada kurva parabola.
+            </p>
+          </div>
+          <div class="card card-hover" style="cursor:pointer;" onclick="navigateTo('modules', 2)">
+            <div style="font-size:2rem; margin-bottom:8px;">🔍</div>
+            <h4 style="color:var(--sage-dark);">02. Diskriminan & Jenis Akar</h4>
+            <p style="font-size:0.84rem; color:var(--text-muted); margin-top:6px;">
+              Menyelidiki akar real berbeda, kembar, atau imajiner melalui $D = b^2 - 4ac$.
+            </p>
+          </div>
+          <div class="card card-hover" style="cursor:pointer;" onclick="navigateTo('modules', 3)">
+            <div style="font-size:2rem; margin-bottom:8px;">🧩</div>
+            <h4 style="color:var(--sage-dark);">03. Metode Penyelesaian</h4>
+            <p style="font-size:0.84rem; color:var(--text-muted); margin-top:6px;">
+              Menguasai teknik Faktorisasi, Kuadrat Sempurna, dan Rumus Kuadrat ABC.
+            </p>
+          </div>
+          <div class="card card-hover" style="cursor:pointer;" onclick="navigateTo('modules', 4)">
+            <div style="font-size:2rem; margin-bottom:8px;">🏗️</div>
+            <h4 style="color:var(--sage-dark);">04. Menyusun PK Baru</h4>
+            <p style="font-size:0.84rem; color:var(--text-muted); margin-top:6px;">
+              Membentuk persamaan kuadrat baru dari akar-akar maupun jumlah & hasil kalinya.
+            </p>
+          </div>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // 6. HALAMAN 2: PETA BELAJAR
+    // =========================================================================
+    const modulesMeta = [
+      {
+        id: 1,
+        code: 'MODUL 01',
+        title: 'Mengenal Persamaan Kuadrat',
+        icon: '📈',
+        time: '15 Menit',
+        desc: 'Pengertian persamaan kuadrat, bentuk umum ax² + bx + c = 0, variabel, koefisien, konstanta, serta pengaruh nilai a, b, dan c pada bentuk dan posisi parabola.'
+      },
+      {
+        id: 2,
+        code: 'MODUL 02',
+        title: 'Menemukan Jenis Akar',
+        icon: '🌱',
+        time: '15 Menit',
+        desc: 'Pengertian akar-akar persamaan kuadrat, rumus diskriminan D = b² − 4ac, serta klasifikasi akar real berbeda (D > 0), akar kembar (D = 0), dan imajiner (D < 0).'
+      },
+      {
+        id: 3,
+        code: 'MODUL 03',
+        title: 'Menyelesaikan Persamaan Kuadrat',
+        icon: '⚙️',
+        time: '25 Menit',
+        desc: 'Tiga metode penyelesaian persamaan kuadrat secara bertahap: Faktorisasi, Melengkapkan Kuadrat Sempurna, dan Rumus Kuadrat ABC.'
+      },
+      {
+        id: 4,
+        code: 'MODUL 04',
+        title: 'Menyusun Persamaan Kuadrat Baru',
+        icon: '🧱',
+        time: '15 Menit',
+        desc: 'Menyusun persamaan kuadrat baru jika diketahui akar-akarnya (x − x₁)(x − x₂) = 0 maupun jika diketahui jumlah dan hasil kali akar-akarnya.'
+      }
+    ];
+
+    function renderMap() {
+      const container = document.getElementById('page-map');
+      let cardsHTML = modulesMeta.map(mod => {
+        const st = appState.modules[mod.id].status;
+        let statusLabel = 'Belum Dimulai';
+        let statusClass = 'status-not-started';
+        let btnText = 'Mulai Modul ▶';
+
+        if (st === 'in-progress') {
+          statusLabel = 'Sedang Berjalan';
+          statusClass = 'status-in-progress';
+          btnText = 'Lanjutkan ▶';
+        } else if (st === 'completed') {
+          statusLabel = 'Selesai ✔';
+          statusClass = 'status-completed';
+          btnText = 'Ulangi Modul ↺';
+        }
+
+        return `
+          <div class="card card-hover" style="display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <span style="background:var(--sage-light); color:var(--sage-dark); font-weight:800; padding:4px 12px; border-radius:99px; font-size:0.8rem;">
+                  ${mod.code}
+                </span>
+                <span class="status-pill ${statusClass}">${statusLabel}</span>
+              </div>
+              <div style="font-size:2.6rem; margin-bottom:8px;">${mod.icon}</div>
+              <h3 style="color:var(--sage-dark); margin-bottom:8px;">${mod.title}</h3>
+              <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:14px;">${mod.desc}</p>
+            </div>
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:center; border-top:1.5px dashed var(--border-soft); padding-top:14px;">
+                <span style="font-size:0.82rem; font-weight:600; color:var(--text-muted);">⏱️ Estimasi: ${mod.time}</span>
+                <button class="btn btn-primary btn-sm" onclick="startModule(${mod.id})">${btnText}</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      container.innerHTML = `
+        <div class="mascot-wrapper">
+          <div class="mascot-avatar">${getMascotSVG('happy', 78)}</div>
+          <div class="speech-bubble">
+            <strong>Peta Perjalanan Belajar!</strong><br>
+            Pilih level modul di bawah ini secara berurutan. Setiap modul memiliki eksperimen visual dan <em>Kuis Mini</em> yang harus kamu selesaikan untuk menandai modul sebagai <strong>Selesai</strong>!
+          </div>
+        </div>
+        <div class="grid-2">${cardsHTML}</div>
+      `;
+    }
+
+    function startModule(id) {
+      if (appState.modules[id].status === 'not-started') {
+        appState.modules[id].status = 'in-progress';
+        saveState();
+      }
+      navigateTo('modules', id);
+    }
+
+    // =========================================================================
+    // 7. HALAMAN 3: MODUL MATERI (SESUAI MATERI PDF)
+    // =========================================================================
+    function renderModule(id) {
+      activeModuleId = id;
+      if (appState.modules[id].status === 'not-started') {
+        appState.modules[id].status = 'in-progress';
+        saveState();
+      }
+
+      const container = document.getElementById('page-modules');
+      const pct = calculateOverallProgress();
+      const modStatus = appState.modules[id].status;
+
+      let contentHTML = '';
+
+      if (id === 1) {
+        contentHTML = `
+          <div class="card" style="margin-bottom:20px;">
+            <span class="card-corner-star">Materi Inti 01</span>
+            <h2 style="color:var(--sage-dark); margin-bottom:10px;">1. Pengertian & Bentuk Umum Persamaan Kuadrat</h2>
+            <p>
+              <strong>Persamaan kuadrat</strong> merupakan persamaan matematika yang memuat variabel dengan <strong>pangkat tertinggi dua</strong>. Persamaan kuadrat juga sering disebut sebagai <strong>persamaan parabola</strong>.
+            </p>
+            <div class="formula-box">
+              $$ax^2 + bx + c = 0$$
+            </div>
+            <div class="grid-3" style="margin-top:14px;">
+              <div class="sticky-note sage">
+                <strong>$x$ : Variabel</strong><br>
+                Nilai yang belum diketahui dan berpangkat tertinggi dua.
+              </div>
+              <div class="sticky-note">
+                <strong>$a, b$ : Koefisien</strong><br>
+                Bilangan pengali di depan variabel $x^2$ dan $x$ (dengan $a \\neq 0$).
+              </div>
+              <div class="sticky-note peach">
+                <strong>$c$ : Konstanta</strong><br>
+                Suku tetap yang tidak memuat variabel $x$.
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom:20px;">
+            <h2 style="color:var(--sage-dark); margin-bottom:12px;">2. Pengaruh Nilai $a$, $b$, dan $c$ terhadap Grafik Parabola</h2>
+            
+            <h3 style="color:var(--sage-dark); margin-top:10px;">A. Pengaruh Nilai $a$ (Arah Terbukanya Kurva)</h3>
+            <p>Nilai $a$ menentukan cekung atau cembungnya kurva parabola:</p>
+            <div class="grid-2" style="margin:10px 0 18px;">
+              <div class="sticky-note sage">
+                <strong>Jika $a > 0$:</strong> Parabola terbuka ke atas (cekung).
+              </div>
+              <div class="sticky-note peach">
+                <strong>Jika $a < 0$:</strong> Parabola terbuka ke bawah (cembung).
+              </div>
+            </div>
+
+            <h3 style="color:var(--sage-dark); margin-top:10px;">B. Pengaruh Nilai $b$ (Posisi Puncak & Sumbu Simetri)</h3>
+            <p>Nilai $b$ menentukan posisi puncak parabola dan nilai sumbu simetri kurva:</p>
+            <div class="sticky-note" style="margin-bottom:12px;">
+              <strong>⚠️ Catatan Verifikasi Materi PDF:</strong><br>
+              Pada modul PDF tertulis rumus sumbu simetri $x = \\frac{b}{2a}$ dengan keterangan:<br>
+              • Titik puncak di <strong>kiri</strong> sumbu $y$ jika syarat $ab < 0$<br>
+              • Titik puncak <strong>pada</strong> sumbu $y$ jika syarat $b = 0$<br>
+              • Titik puncak di <strong>kanan</strong> sumbu $y$ jika syarat $ab > 0$<br>
+              <em style="font-size:0.85rem; color:#6B5010;">(Catatan Verifikasi: Dalam konvensi aljabar standar, sumbu simetri dirumuskan $x = -\\frac{b}{2a}$, sehingga puncak di kiri sumbu $y$ terjadi saat $ab > 0$ dan di kanan saat $ab < 0$. Harap diverifikasi sesuai petunjuk pengajar).</em>
+            </div>
+
+            <h3 style="color:var(--sage-dark); margin-top:14px;">C. Pengaruh Nilai $c$ (Titik Potong dengan Sumbu $y$)</h3>
+            <div class="grid-3" style="margin-top:10px;">
+              <div class="sticky-note sage">
+                <strong>$c > 0$</strong><br>Grafik memotong sumbu $y$ positif.
+              </div>
+              <div class="sticky-note">
+                <strong>$c = 0$</strong><br>Grafik memotong sumbu $y$ di pusat $(0,0)$.
+              </div>
+              <div class="sticky-note peach">
+                <strong>$c < 0$</strong><br>Grafik memotong sumbu $y$ negatif.
+              </div>
+            </div>
+          </div>
+
+          <!-- Aktivitas Interaktif Mini di Modul 1 -->
+          <div class="card" style="margin-bottom:20px;">
+            <span class="card-corner-star">Eksperimen Langsung</span>
+            <h3 style="color:var(--sage-dark); margin-bottom:8px;">🎛️ Coba Ubah Nilai $a$, $b$, dan $c$!</h3>
+            <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:14px;">
+              Geser penggeser di bawah ini untuk melihat perubahan bentuk kurva $y = ax^2 + bx + c$ secara langsung!
+            </p>
+            <div class="grid-2" style="align-items:center;">
+              <div>
+                <div class="slider-group">
+                  <div class="slider-header"><span>Nilai a (tidak boleh 0):</span><span id="m1ValA">1</span></div>
+                  <input type="range" id="m1SliderA" min="-5" max="5" step="1" value="1" oninput="updateMod1Canvas()">
+                </div>
+                <div class="slider-group">
+                  <div class="slider-header"><span>Nilai b:</span><span id="m1ValB">0</span></div>
+                  <input type="range" id="m1SliderB" min="-8" max="8" step="1" value="0" oninput="updateMod1Canvas()">
+                </div>
+                <div class="slider-group">
+                  <div class="slider-header"><span>Nilai c:</span><span id="m1ValC">0</span></div>
+                  <input type="range" id="m1SliderC" min="-6" max="6" step="1" value="0" oninput="updateMod1Canvas()">
+                </div>
+                <div id="m1InfoBox" class="sticky-note sage" style="font-size:0.88rem;"></div>
+              </div>
+              <div class="canvas-wrap">
+                <canvas id="m1Canvas" width="360" height="280"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Kuis Mini Modul 1 -->
+          <div class="card">
+            <span class="card-corner-star">Kuis Mini Modul 01</span>
+            <h3 style="color:var(--sage-dark); margin-bottom:10px;">📝 Cek Pemahamanmu</h3>
+            <p style="margin-bottom:12px;">Jika sebuah persamaan kuadrat memiliki nilai $a = -2$ dan $c = 5$, bagaimana bentuk grafik parabolanya?</p>
+            <div id="m1QuizOptions">
+              <div class="quiz-option" onclick="checkModuleQuiz(1, 0, false, this)">A. Terbuka ke atas dan memotong sumbu y negatif</div>
+              <div class="quiz-option" onclick="checkModuleQuiz(1, 1, true, this)">B. Terbuka ke bawah dan memotong sumbu y positif</div>
+              <div class="quiz-option" onclick="checkModuleQuiz(1, 2, false, this)">C. Terbuka ke bawah dan melalui titik pusat (0,0)</div>
+            </div>
+            <div id="m1QuizFeedback" style="margin-top:12px;"></div>
+          </div>
+        `;
+      } else if (id === 2) {
+        contentHTML = `
+          <div class="card" style="margin-bottom:20px;">
+            <span class="card-corner-star">Materi Inti 02</span>
+            <h2 style="color:var(--sage-dark); margin-bottom:10px;">1. Akar-akar & Rumus Diskriminan</h2>
+            <p>
+              Penyelesaian dari persamaan kuadrat disebut sebagai <strong>akar-akar persamaan kuadrat</strong>. 
+              Macam-macam akar persamaan kuadrat dapat diketahui menggunakan rumus umum <strong>diskriminan ($D$)</strong> dari $ax^2 + bx + c = 0$:
+            </p>
+            <div class="formula-box">
+              $$D = b^2 - 4ac$$
+            </div>
+
+            <div class="grid-3" style="margin-top:16px;">
+              <div class="sticky-note sage">
+                <h4 style="color:var(--sage-dark);">1. $D > 0$</h4>
+                <strong>Dua Akar Real Berbeda</strong>
+                <p style="font-size:0.85rem; margin-top:6px;">Akar-akar bernilai real dan berlainan ($x_1 \\neq x_2$).</p>
+              </div>
+              <div class="sticky-note">
+                <h4 style="color:#7A5C12;">2. $D = 0$</h4>
+                <strong>Dua Akar Real Kembar</strong>
+                <p style="font-size:0.85rem; margin-top:6px;">Menghasilkan dua akar real yang bernilai sama ($x_1 = x_2$).</p>
+              </div>
+              <div class="sticky-note peach">
+                <h4 style="color:#82352D;">3. $D < 0$</h4>
+                <strong>Akar Imajiner / Tidak Real</strong>
+                <p style="font-size:0.85rem; margin-top:6px;">Akar persamaan kuadrat berbentuk imajiner atau tidak real.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom:20px;">
+            <span class="card-corner-star">Contoh Soal PDF</span>
+            <h2 style="color:var(--sage-dark); margin-bottom:14px;">2. Pembahasan Bertahap Sesuai Materi</h2>
+            
+            <div class="grid-3">
+              <div style="background:var(--sage-tint); padding:16px; border-radius:16px; border:2px solid var(--sage-soft);">
+                <h4 style="color:var(--sage-dark);">Contoh 1 ($D > 0$)</h4>
+                <p style="font-size:0.88rem; margin:6px 0;">Tentukan jenis akar dari $x^2 + 4x + 2 = 0$.</p>
+                <ul class="step-list" style="font-size:0.85rem;">
+                  <li class="step-item"><span class="step-num">1</span>$a = 1, b = 4, c = 2$</li>
+                  <li class="step-item"><span class="step-num">2</span>$D = 4^2 - 4(1)(2)$</li>
+                  <li class="step-item"><span class="step-num">3</span>$D = 16 - 8 = 8$</li>
+                </ul>
+                <p style="font-size:0.85rem; font-weight:700; color:var(--sage-dark);">Karena $D > 0$, jenis akarnya adalah dua akar real berbeda.</p>
+              </div>
+
+              <div style="background:var(--off-white); padding:16px; border-radius:16px; border:2px solid var(--yellow-accent);">
+                <h4 style="color:#7A5C12;">Contoh 2 ($D = 0$)</h4>
+                <p style="font-size:0.88rem; margin:6px 0;">Tentukan jenis akar dari $2x^2 + 4x + 2 = 0$.</p>
+                <ul class="step-list" style="font-size:0.85rem;">
+                  <li class="step-item"><span class="step-num">1</span>$a = 2, b = 4, c = 2$</li>
+                  <li class="step-item"><span class="step-num">2</span>$D = 4^2 - 4(2)(2)$</li>
+                  <li class="step-item"><span class="step-num">3</span>$D = 16 - 16 = 0$</li>
+                </ul>
+                <p style="font-size:0.85rem; font-weight:700; color:#7A5C12;">Karena $D = 0$, terbukti akar real dan kembar ($x_1 = x_2$).</p>
+              </div>
+
+              <div style="background:#FFF5F2; padding:16px; border-radius:16px; border:2px solid var(--peach-accent);">
+                <h4 style="color:#82352D;">Contoh 3 ($D < 0$)</h4>
+                <p style="font-size:0.88rem; margin:6px 0;">Tentukan jenis akar dari $x^2 + 2x + 4 = 0$.</p>
+                <ul class="step-list" style="font-size:0.85rem;">
+                  <li class="step-item"><span class="step-num">1</span>$a = 1, b = 2, c = 4$</li>
+                  <li class="step-item"><span class="step-num">2</span>$D = 2^2 - 4(1)(4)$</li>
+                  <li class="step-item"><span class="step-num">3</span>$D = 4 - 16 = -12$</li>
+                </ul>
+                <p style="font-size:0.85rem; font-weight:700; color:#82352D;">Karena $D < 0$, akarnya tidak real atau imajiner.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="card-corner-star">Kuis Mini Modul 02</span>
+            <h3 style="color:var(--sage-dark); margin-bottom:10px;">📝 Cek Pemahamanmu</h3>
+            <p style="margin-bottom:12px;">Berapakah nilai diskriminan dari persamaan $x^2 + 2x + 4 = 0$ dan apa jenis akarnya?</p>
+            <div id="m2QuizOptions">
+              <div class="quiz-option" onclick="checkModuleQuiz(2, 0, false, this)">A. D = 12, dua akar real berbeda</div>
+              <div class="quiz-option" onclick="checkModuleQuiz(2, 1, false, this)">B. D = 0, akar real kembar</div>
+              <div class="quiz-option" onclick="checkModuleQuiz(2, 2, true, this)">C. D = −12, akar imajiner / tidak real</div>
+            </div>
+            <div id="m2QuizFeedback" style="margin-top:12px;"></div>
+          </div>
+        `;
+      } else if (id === 3) {
+        contentHTML = `
+          <div class="card" style="margin-bottom:20px;">
+            <span class="card-corner-star">Metode A</span>
+            <h2 style="color:var(--sage-dark); margin-bottom:10px;">A. Metode Faktorisasi</h2>
+            <p>
+              Faktorisasi adalah metode menentukan akar-akar dengan mencari nilai yang jika dikalikan menghasilkan bentuk persamaan semula. Terdapat tiga pola dasar faktorisasi:
+            </p>
+            <table class="styled-table">
+              <thead>
+                <tr><th>No</th><th>Bentuk Persamaan</th><th>Faktorisasi Akar-akar</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>1</td><td>$x^2 + 2xy + y^2 = 0$</td><td>$(x + y)^2 = 0$</td></tr>
+                <tr><td>2</td><td>$x^2 - 2xy + y^2 = 0$</td><td>$(x - y)^2 = 0$</td></tr>
+                <tr><td>3</td><td>$x^2 - y^2 = 0$</td><td>$(x + y)(x - y) = 0$</td></tr>
+              </tbody>
+            </table>
+            <div class="sticky-note sage">
+              <strong>Contoh PDF:</strong> Selesaikan $5x^2 + 13x + 6 = 0$ dengan faktorisasi!
+              <ul class="step-list">
+                <li class="step-item"><span class="step-num">1</span>$5x^2 + 13x + 6 = 0$</li>
+                <li class="step-item"><span class="step-num">2</span>$5x^2 + 10x + 3x + 6 = 0$</li>
+                <li class="step-item"><span class="step-num">3</span>$5x(x + 2) + 3(x + 2) = 0$</li>
+                <li class="step-item"><span class="step-num">4</span>$(5x + 3)(x + 2) = 0$</li>
+                <li class="step-item"><span class="step-num">5</span>$5x = -3$ atau $x = -2 \\Rightarrow \\mathbf{x = -\\frac{3}{5}}$ atau $\\mathbf{x = -2}$</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom:20px;">
+            <span class="card-corner-star">Metode B</span>
+            <h2 style="color:var(--sage-dark); margin-bottom:10px;">B. Metode Kuadrat Sempurna</h2>
+            <p>
+              Mengubah persamaan menjadi bentuk kuadrat sempurna $(x + p)^2 = x^2 + 2px + p^2$.
+            </p>
+            <div class="sticky-note">
+              <strong>Contoh PDF:</strong> Selesaikan $x^2 + 6x + 5 = 0$ dengan kuadrat sempurna!
+              <ul class="step-list">
+                <li class="step-item"><span class="step-num">1</span>$x^2 + 6x + 5 = 0$</li>
+                <li class="step-item"><span class="step-num">2</span>$x^2 + 6x = -5$</li>
+                <li class="step-item"><span class="step-num">3</span>$x^2 + 6x + 9 = -5 + 9$</li>
+                <li class="step-item"><span class="step-num">4</span>$(x + 3)^2 = 4$</li>
+                <li class="step-item"><span class="step-num">5</span>$x + 3 = \\pm 2$</li>
+                <li class="step-item"><span class="step-num">6</span>$x = -3 \\pm 2$</li>
+                <li class="step-item"><span class="step-num">7</span>$\\mathbf{x = -1}$ atau $\\mathbf{x = -5}$</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom:20px;">
+            <span class="card-corner-star">Metode C</span>
+            <h2 style="color:var(--sage-dark); margin-bottom:10px;">C. Rumus Kuadrat ABC</h2>
+            <p>Alternatif pilihan ketika persamaan kuadrat sulit diselesaikan dengan faktorisasi maupun kuadrat sempurna:</p>
+            <div class="formula-box">
+              $$x_{1,2} = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$
+            </div>
+            <div class="sticky-note peach">
+              <strong>Contoh PDF:</strong> Selesaikan $x^2 + 4x - 12 = 0$ menggunakan rumus ABC! ($a = 1, b = 4, c = -12$)
+              <ul class="step-list">
+                <li class="step-item"><span class="step-num">1</span>$x_{1,2} = \\frac{-4 \\pm \\sqrt{4^2 - 4(1)(-12)}}{2(1)}$</li>
+                <li class="step-item"><span class="step-num">2</span>$x = \\frac{-4 \\pm \\sqrt{16 + 48}}{2} = \\frac{-4 \\pm \\sqrt{64}}{2}$</li>
+                <li class="step-item"><span class="step-num">3</span>$x = \\frac{-4 \\pm 8}{2}$</li>
+                <li class="step-item"><span class="step-num">4</span>$x_1 = \\frac{-4 + 8}{2} = \\mathbf{2}$ atau $x_2 = \\frac{-4 - 8}{2} = \\mathbf{-6}$</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="card-corner-star">Kuis Mini Modul 03</span>
+            <h3 style="color:var(--sage-dark); margin-bottom:10px;">📝 Cek Pemahamanmu</h3>
+            <p style="margin-bottom:12px;">Berdasarkan contoh metode kuadrat sempurna di atas, berapakah akar-akar dari $x^2 + 6x + 5 = 0$?</p>
+            <div id="m3QuizOptions">
+              <div class="quiz-option" onclick="checkModuleQuiz(3, 0, true, this)">A. x = −1 atau x = −5</div>
+              <div class="quiz-option" onclick="checkModuleQuiz(3, 1, false, this)">B. x = 1 atau x = 5</div>
+              <div class="quiz-option" onclick="checkModuleQuiz(3, 2, false, this)">C. x = −3 atau x = 2</div>
+            </div>
+            <div id="m3QuizFeedback" style="margin-top:12px;"></div>
+          </div>
+        `;
+      } else if (id === 4) {
+        contentHTML = `
+          <div class="card" style="margin-bottom:20px;">
+            <span class="card-corner-star">Cara Pertama</span>
+            <h2 style="color:var(--sage-dark); margin-bottom:10px;">A. Menyusun PK Jika Diketahui Akar-akarnya</h2>
+            <p>Jika sebuah persamaan kuadrat memiliki akar $x_1$ dan $x_2$, maka persamaannya dibentuk dengan rumus:</p>
+            <div class="formula-box">
+              $$(x - x_1)(x - x_2) = 0$$
+            </div>
+            <div class="sticky-note sage">
+              <strong>Contoh PDF:</strong> Tentukan persamaan kuadrat yang akar-akarnya $-2$ dan $3$!
+              <ul class="step-list">
+                <li class="step-item"><span class="step-num">1</span>$x_1 = -2$ dan $x_2 = 3$</li>
+                <li class="step-item"><span class="step-num">2</span>$(x - (-2))(x - 3) = 0 \\Rightarrow (x + 2)(x - 3) = 0$</li>
+                <li class="step-item"><span class="step-num">3</span>$x^2 - 3x + 2x - 6 = 0$</li>
+                <li class="step-item"><span class="step-num">4</span>$\\mathbf{x^2 - x - 6 = 0}$</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom:20px;">
+            <span class="card-corner-star">Cara Kedua</span>
+            <h2 style="color:var(--sage-dark); margin-bottom:10px;">B. Menyusun PK Jika Jumlah dan Hasil Kali Akar Diketahui</h2>
+            <p>Jika jumlah $(x_1 + x_2)$ dan hasil kali $(x_1 x_2)$ akar diketahui, gunakan bentuk berikut:</p>
+            <div class="formula-box">
+              $$x^2 - (x_1 + x_2)x + (x_1 x_2) = 0$$
+            </div>
+            <div class="sticky-note">
+              <strong>Contoh PDF:</strong> Tentukan persamaan kuadrat yang memiliki akar $3$ dan $-\\frac{1}{2}$!
+              <ul class="step-list">
+                <li class="step-item"><span class="step-num">1</span>$x_1 + x_2 = 3 + \\left(-\\frac{1}{2}\\right) = \\frac{6}{2} - \\frac{1}{2} = \\frac{5}{2}$</li>
+                <li class="step-item"><span class="step-num">2</span>$x_1 x_2 = 3\\left(-\\frac{1}{2}\\right) = -\\frac{3}{2}$</li>
+                <li class="step-item"><span class="step-num">3</span>$x^2 - \\frac{5}{2}x - \\frac{3}{2} = 0$ (masing-masing ruas dikali 2)</li>
+                <li class="step-item"><span class="step-num">4</span>$\\mathbf{2x^2 - 5x - 3 = 0}$</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="card-corner-star">Kuis Mini Modul 04</span>
+            <h3 style="color:var(--sage-dark); margin-bottom:10px;">📝 Cek Pemahamanmu</h3>
+            <p style="margin-bottom:12px;">Jika sebuah persamaan kuadrat memiliki akar $x_1 = 4$ dan $x_2 = -1$, persamaan kuadrat yang terbentuk adalah...</p>
+            <div id="m4QuizOptions">
+              <div class="quiz-option" onclick="checkModuleQuiz(4, 0, false, this)">A. x² + 3x − 4 = 0</div>
+              <div class="quiz-option" onclick="checkModuleQuiz(4, 1, true, this)">B. x² − 3x − 4 = 0</div>
+              <div class="quiz-option" onclick="checkModuleQuiz(4, 2, false, this)">C. x² − 5x + 4 = 0</div>
+            </div>
+            <div id="m4QuizFeedback" style="margin-top:12px;"></div>
+          </div>
+        `;
+      }
+
+      container.innerHTML = `
+        <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:12px; margin-bottom:18px;">
+          <button class="btn btn-outline btn-sm" onclick="navigateTo('map')">← Kembali ke Peta Belajar</button>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span class="status-pill ${modStatus === 'completed' ? 'status-completed' : 'status-in-progress'}">
+              ${modStatus === 'completed' ? 'Modul Selesai ✔' : 'Sedang Berjalan'}
+            </span>
+            <span style="font-size:0.85rem; font-weight:700; color:var(--sage-dark);">Progres Total: ${pct}%</span>
+          </div>
+        </div>
+
+        <div class="mascot-wrapper">
+          <div class="mascot-avatar">${getMascotSVG('thinking', 76)}</div>
+          <div class="speech-bubble">
+            <strong>${modulesMeta[id - 1].code}: ${modulesMeta[id - 1].title}</strong><br>
+            Pelajari setiap kartu konsep di bawah ini, lalu jawab <strong>Kuis Mini</strong> di bagian bawah halaman untuk menyelesaikan modul!
+          </div>
+        </div>
+
+        ${contentHTML}
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:26px; padding-top:18px; border-top:2px dashed var(--sage-soft);">
+          <button class="btn btn-outline" ${id === 1 ? 'disabled style="opacity:0.4; cursor:not-allowed;"' : `onclick="navigateTo('modules', ${id - 1})"`}>
+            ← Modul Sebelumnya
+          </button>
+          ${id < 4
+            ? `<button class="btn btn-primary" onclick="navigateTo('modules', ${id + 1})">Modul Berikutnya →</button>`
+            : `<button class="btn btn-secondary" onclick="navigateTo('lab')">Lanjut ke Lab Eksplorasi 🧪 →</button>`
+          }
+        </div>
+      `;
+
+      if (id === 1) {
+        setTimeout(updateMod1Canvas, 50);
+      }
+    }
+
+    function updateMod1Canvas() {
+      const sA = document.getElementById('m1SliderA');
+      if (!sA) return;
+      let a = parseInt(sA.value, 10);
+      if (a === 0) {
+        a = 1;
+        sA.value = 1;
+        showToast('Nilai a tidak boleh 0 agar tetap persamaan kuadrat!');
+      }
+      const b = parseInt(document.getElementById('m1SliderB').value, 10);
+      const c = parseInt(document.getElementById('m1SliderC').value, 10);
+
+      document.getElementById('m1ValA').textContent = a;
+      document.getElementById('m1ValB').textContent = b;
+      document.getElementById('m1ValC').textContent = c;
+
+      const arah = a > 0 ? 'Terbuka ke atas (cekung)' : 'Terbuka ke bawah (cembung)';
+      const potongY = c > 0 ? `Sumbu y positif (0, ${c})` : (c === 0 ? 'Titik pusat (0, 0)' : `Sumbu y negatif (0, ${c})`);
+      const symStd = (-b / (2 * a)).toFixed(2);
+
+      document.getElementById('m1InfoBox').innerHTML = `
+        <strong>Persamaan:</strong> $y = ${a}x^2 ${b >= 0 ? '+ ' + b : '- ' + Math.abs(b)}x ${c >= 0 ? '+ ' + c : '- ' + Math.abs(c)}$<br>
+        • <strong>Arah kurva:</strong> ${arah}<br>
+        • <strong>Titik potong sumbu y:</strong> ${potongY}<br>
+        • <strong>Sumbu simetri grafik:</strong> $x = ${symStd}$
+      `;
+      typesetMath();
+      drawParabolaOnCanvas('m1Canvas', a, b, c);
+    }
+
+    function checkModuleQuiz(modId, optIdx, isCorrect, el) {
+      const container = document.getElementById(`m${modId}QuizOptions`);
+      const feedback = document.getElementById(`m${modId}QuizFeedback`);
+      container.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected', 'correct', 'wrong'));
+
+      if (isCorrect) {
+        el.classList.add('correct');
+        const wasCompleted = appState.modules[modId].status === 'completed';
+        appState.modules[modId].quizPassed = true;
+        appState.modules[modId].status = 'completed';
+        if (!wasCompleted) {
+          addPoints(50);
+          showToast(`🎉 Modul 0${modId} Selesai! +50 Poin!`);
+        } else {
+          saveState();
+        }
+        feedback.innerHTML = `
+          <div class="sticky-note sage">
+            <strong>🎉 Jawaban Benar!</strong> Hebat sekali! Kamu telah menuntaskan <strong>Modul 0${modId}</strong>.
+          </div>
+        `;
+      } else {
+        el.classList.add('wrong');
+        feedback.innerHTML = `
+          <div class="sticky-note peach">
+            <strong>💪 Belum tepat, coba lagi!</strong> Periksa kembali catatan konsep di atas ya.
+          </div>
+        `;
+      }
+    }
+
+    // =========================================================================
+    // 8. FUNGSI MENGGAMBAR GRAFIK PARABOLA DINAMIS (CANVAS)
+    // =========================================================================
+    function drawParabolaOnCanvas(canvasId, a, b, c) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width;
+      const H = canvas.height;
+      const cx = W / 2;
+      const cy = H / 2;
+      const scale = 24; // 24px per 1 satuan
+
+      ctx.clearRect(0, 0, W, H);
+
+      // Latar belakang lembut
+      ctx.fillStyle = '#FDFBF7';
+      ctx.fillRect(0, 0, W, H);
+
+      // Grid kotak-kotak
+      ctx.strokeStyle = '#E2ECE4';
+      ctx.lineWidth = 1;
+      for (let x = cx % scale; x < W; x += scale) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+      }
+      for (let y = cy % scale; y < H; y += scale) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+      }
+
+      // Sumbu X dan Y
+      ctx.strokeStyle = '#5B7B65';
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(W, cy); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx, H); ctx.stroke();
+
+      // Label angka pada sumbu
+      ctx.fillStyle = '#5C6F62';
+      ctx.font = '10px Poppins';
+      for (let i = -7; i <= 7; i++) {
+        if (i !== 0) {
+          ctx.fillText(i, cx + i * scale - 4, cy + 12);
+          ctx.fillText(-i, cx + 5, cy + i * scale + 3);
+        }
+      }
+
+      // Gambar garis sumbu simetri putus-putus
+      const xv = -b / (2 * a);
+      const yv = a * xv * xv + b * xv + c;
+      const pxXv = cx + xv * scale;
+
+      ctx.save();
+      ctx.setLineDash([5, 5]);
+      ctx.strokeStyle = '#F4978E';
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.moveTo(pxXv, 0);
+      ctx.lineTo(pxXv, H);
+      ctx.stroke();
+      ctx.restore();
+
+      // Gambar Kurva Parabola y = ax^2 + bx + c
+      ctx.strokeStyle = '#2F3E34';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      let started = false;
+      for (let px = 0; px <= W; px += 2) {
+        const mathX = (px - cx) / scale;
+        const mathY = a * mathX * mathX + b * mathX + c;
+        const py = cy - mathY * scale;
+        if (py >= -100 && py <= H + 100) {
+          if (!started) {
+            ctx.moveTo(px, py);
+            started = true;
+          } else {
+            ctx.lineTo(px, py);
+          }
+        }
+      }
+      ctx.stroke();
+
+      // Titik Potong Sumbu Y (0, c)
+      const pyC = cy - c * scale;
+      if (pyC >= 0 && pyC <= H) {
+        ctx.fillStyle = '#F4D06F';
+        ctx.strokeStyle = '#2F3E34';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(cx, pyC, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+      }
+
+      // Titik Puncak (xv, yv)
+      const pyYv = cy - yv * scale;
+      if (pxXv >= 0 && pxXv <= W && pyYv >= 0 && pyYv <= H) {
+        ctx.fillStyle = '#F4978E';
+        ctx.strokeStyle = '#2F3E34';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(pxXv, pyYv, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+      }
+    }
+
+    // =========================================================================
+    // 9. HALAMAN 4: LAB EKSPLORASI (5 FITUR INTERAKTIF UTAMA)
+    // =========================================================================
+    function renderLab() {
+      const container = document.getElementById('page-lab');
+      container.innerHTML = `
+        <div class="mascot-wrapper">
+          <div class="mascot-avatar">${getMascotSVG('amazed', 76)}</div>
+          <div class="speech-bubble">
+            <strong>Selamat Datang di Lab Eksplorasi! 🧪</strong><br>
+            Pilih salah satu laboratorium di bawah ini untuk bereksperimen secara langsung dengan kurva parabola, diskriminan, akar-akar, teka-teki langkah, dan penyusun persamaan!
+          </div>
+        </div>
+
+        <div class="lab-tabs">
+          <button class="lab-tab ${activeLabTab === 'playground' ? 'active' : ''}" onclick="switchLabTab('playground')">1. Taman Parabola</button>
+          <button class="lab-tab ${activeLabTab === 'discriminant' ? 'active' : ''}" onclick="switchLabTab('discriminant')">2. Lab Diskriminan</button>
+          <button class="lab-tab ${activeLabTab === 'roots' ? 'active' : ''}" onclick="switchLabTab('roots')">3. Penjelajah Akar</button>
+          <button class="lab-tab ${activeLabTab === 'puzzle' ? 'active' : ''}" onclick="switchLabTab('puzzle')">4. Teka-Teki Langkah</button>
+          <button class="lab-tab ${activeLabTab === 'builder' ? 'active' : ''}" onclick="switchLabTab('builder')">5. Penyusun Persamaan</button>
+        </div>
+
+        <div id="labContentArea"></div>
+      `;
+
+      renderActiveLabTool();
+    }
+
+    function switchLabTab(tab) {
+      activeLabTab = tab;
+      renderLab();
+    }
+
+    function renderActiveLabTool() {
+      const area = document.getElementById('labContentArea');
+      if (!area) return;
+
+      if (activeLabTab === 'playground') {
+        area.innerHTML = `
+          <div class="card">
+            <span class="card-corner-star">Laboratorium Grafik</span>
+            <h2 style="color:var(--sage-dark); margin-bottom:6px;">📈 Taman Parabola</h2>
+            <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:16px;">
+              Ubah nilai koefisien $a$, $b$, dan konstanta $c$ untuk mengamati bentuk grafik $y = ax^2 + bx + c$ secara langsung.
+            </p>
+
+            <div class="grid-2" style="align-items:start;">
+              <div>
+                <div class="formula-box" id="pgFormulaDisplay">$$y = 1x^2 + 0x + 0$$</div>
+
+                <div class="slider-group">
+                  <div class="slider-header"><span>Koefisien a (a ≠ 0):</span><span id="pgLabelA">1</span></div>
+                  <input type="range" id="pgSliderA" min="-5" max="5" step="0.5" value="1" oninput="updatePlayground()">
+                </div>
+                <div class="slider-group">
+                  <div class="slider-header"><span>Koefisien b:</span><span id="pgLabelB">0</span></div>
+                  <input type="range" id="pgSliderB" min="-8" max="8" step="1" value="0" oninput="updatePlayground()">
+                </div>
+                <div class="slider-group">
+                  <div class="slider-header"><span>Konstanta c:</span><span id="pgLabelC">0</span></div>
+                  <input type="range" id="pgSliderC" min="-6" max="6" step="1" value="0" oninput="updatePlayground()">
+                </div>
+
+                <div class="sticky-note sage" id="pgDetailsBox" style="font-size:0.88rem;"></div>
+
+                <!-- Tantangan Kecil Taman Parabola -->
+                <div class="sticky-note" style="margin-top:14px;">
+                  <strong>🎯 Tantangan Eksplorasi:</strong>
+                  <div style="margin-top:6px; font-size:0.86rem;">
+                    <div>${appState.labChallenges.parabolaDown ? '✅' : '⬜'} 1. Atur nilai $a < 0$ agar parabola terbuka ke bawah.</div>
+                    <div>${appState.labChallenges.parabolaPosC ? '✅' : '⬜'} 2. Atur nilai $c > 0$ agar memotong sumbu $y$ positif.</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="canvas-wrap" style="flex-direction:column;">
+                <canvas id="pgCanvas" width="420" height="360"></canvas>
+                <div style="font-size:0.78rem; color:var(--text-muted); margin-top:8px;">
+                  🟡 Titik potong sumbu y &nbsp;|&nbsp; 🔴 Titik puncak &nbsp;|&nbsp; ┄ Sumbu simetri
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        updatePlayground();
+      } else if (activeLabTab === 'discriminant') {
+        area.innerHTML = `
+          <div class="card">
+            <span class="card-corner-star">Laboratorium Diskriminan</span>
+            <h2 style="color:var(--sage-dark); margin-bottom:6px;">🔬 Lab Diskriminan ($D = b^2 - 4ac$)</h2>
+            <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:16px;">
+              Ubah nilai $a$, $b$, dan $c$ untuk menghitung diskriminan secara otomatis dan melihat jenis akarnya.
+            </p>
+
+            <div class="grid-3" style="margin-bottom:16px;">
+              <div>
+                <label style="font-weight:700; font-size:0.88rem;">Nilai a (a ≠ 0):</label>
+                <input type="number" id="dlInputA" value="1" oninput="updateDiscriminantLab()">
+              </div>
+              <div>
+                <label style="font-weight:700; font-size:0.88rem;">Nilai b:</label>
+                <input type="number" id="dlInputB" value="4" oninput="updateDiscriminantLab()">
+              </div>
+              <div>
+                <label style="font-weight:700; font-size:0.88rem;">Nilai c:</label>
+                <input type="number" id="dlInputC" value="2" oninput="updateDiscriminantLab()">
+              </div>
+            </div>
+
+            <div class="sticky-note" style="margin-bottom:16px;">
+              <strong>🎯 Target Tantangan:</strong> <em>"Bisakah kamu membuat nilai diskriminan sama dengan nol ($D = 0$)?"</em><br>
+              Status: <strong id="dlChallengeStatus">${appState.labChallenges.discZero ? '✅ Berhasil Terpenuhi!' : '⏳ Belum tercapai (Coba atur b² = 4ac, misalnya a=1, b=4, c=4)'}</strong>
+            </div>
+
+            <div class="grid-2" style="align-items:center;">
+              <div id="dlResultCard" class="sticky-note sage"></div>
+              <div class="canvas-wrap">
+                <canvas id="dlCanvas" width="360" height="260"></canvas>
+              </div>
+            </div>
+          </div>
+        `;
+        updateDiscriminantLab();
+      } else if (activeLabTab === 'roots') {
+        renderRootExplorer(area);
+      } else if (activeLabTab === 'puzzle') {
+        renderStepPuzzle(area);
+      } else if (activeLabTab === 'builder') {
+        renderEquationBuilder(area);
+      }
+      typesetMath();
+    }
+
+    // --- 9A. Logika Taman Parabola ---
+    function updatePlayground() {
+      const sA = document.getElementById('pgSliderA');
+      if (!sA) return;
+      let a = parseFloat(sA.value);
+      if (a === 0) {
+        a = 0.5;
+        sA.value = 0.5;
+        showToast('Nilai a tidak boleh 0 karena bukan persamaan kuadrat!');
+      }
+      const b = parseFloat(document.getElementById('pgSliderB').value);
+      const c = parseFloat(document.getElementById('pgSliderC').value);
+
+      document.getElementById('pgLabelA').textContent = a;
+      document.getElementById('pgLabelB').textContent = b;
+      document.getElementById('pgLabelC').textContent = c;
+
+      const signB = b >= 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
+      const signC = c >= 0 ? `+ ${c}` : `- ${Math.abs(c)}`;
+      document.getElementById('pgFormulaDisplay').innerHTML = `$$y = ${a}x^2 ${signB}x ${signC}$$`;
+
+      const arah = a > 0 ? 'Terbuka ke atas (cekung)' : 'Terbuka ke bawah (cembung)';
+      const potongY = `(0, ${c})`;
+      const xv = (-b / (2 * a));
+      const yv = (a * xv * xv + b * xv + c);
+      const pdfSym = (b / (2 * a));
+
+      document.getElementById('pgDetailsBox').innerHTML = `
+        • <strong>Koefisien & Konstanta:</strong> $a = ${a},\\; b = ${b},\\; c = ${c}$<br>
+        • <strong>Arah Parabola:</strong> ${arah}<br>
+        • <strong>Titik Potong Sumbu y:</strong> ${potongY}<br>
+        • <strong>Titik Puncak Grafik:</strong> $(${xv.toFixed(2)},\\; ${yv.toFixed(2)})$<br>
+        • <strong>Sumbu Simetri Grafik:</strong> $x = ${xv.toFixed(2)}$ <span style="font-size:0.78rem; color:var(--text-muted);">(Catatan rumus PDF $b/2a = ${pdfSym.toFixed(2)}$)</span>
+      `;
+
+      let updated = false;
+      if (a < 0 && !appState.labChallenges.parabolaDown) {
+        appState.labChallenges.parabolaDown = true;
+        updated = true;
+        showToast('🎉 Tantangan tercapai: Parabola terbuka ke bawah!');
+      }
+      if (c > 0 && !appState.labChallenges.parabolaPosC) {
+        appState.labChallenges.parabolaPosC = true;
+        updated = true;
+        showToast('🎉 Tantangan tercapai: Memotong sumbu y positif!');
+      }
+      if (updated) {
+        addPoints(30);
+        renderActiveLabTool();
+        return;
+      }
+
+      drawParabolaOnCanvas('pgCanvas', a, b, c);
+      typesetMath();
+    }
+
+    // --- 9B. Logika Lab Diskriminan ---
+    function updateDiscriminantLab() {
+      const inpA = document.getElementById('dlInputA');
+      if (!inpA) return;
+      let a = parseFloat(inpA.value);
+      if (isNaN(a) || a === 0) {
+        a = 1;
+        inpA.value = 1;
+        showToast('Nilai a tidak boleh nol!');
+      }
+      const b = parseFloat(document.getElementById('dlInputB').value) || 0;
+      const c = parseFloat(document.getElementById('dlInputC').value) || 0;
+
+      const D = b * b - 4 * a * c;
+      let jenis = '';
+      let ket = '';
+      let noteClass = 'sage';
+
+      if (D > 0) {
+        jenis = 'Dua Akar Real Berbeda ($D > 0$)';
+        ket = 'Kurva memotong sumbu $x$ di dua titik berlainan ($x_1 \\neq x_2$).';
+        noteClass = 'sage';
+      } else if (D === 0) {
+        jenis = 'Dua Akar Real Kembar ($D = 0$)';
+        ket = 'Kurva menyinggung sumbu $x$ tepat di satu titik ($x_1 = x_2$).';
+        noteClass = '';
+        if (!appState.labChallenges.discZero) {
+          appState.labChallenges.discZero = true;
+          addPoints(40);
+          const stEl = document.getElementById('dlChallengeStatus');
+          if (stEl) stEl.textContent = '✅ Berhasil Terpenuhi! (+40 Poin)';
+          showToast('🎉 Selamat! Kamu berhasil membuat Diskriminan D = 0!');
+        }
+      } else {
+        jenis = 'Akar Imajiner / Tidak Real ($D < 0$)';
+        ket = 'Kurva tidak memotong maupun menyentuh sumbu $x$.';
+        noteClass = 'peach';
+      }
+
+      const resCard = document.getElementById('dlResultCard');
+      resCard.className = `sticky-note ${noteClass}`;
+      resCard.innerHTML = `
+        <h4 style="margin-bottom:8px;">Hasil Perhitungan Diskriminan</h4>
+        <p style="font-size:0.9rem;">
+          $D = b^2 - 4ac$<br>
+          $D = (${b})^2 - 4(${a})(${c})$<br>
+          $D = ${b * b} - (${4 * a * c}) = \\mathbf{${D}}$
+        </p>
+        <hr style="margin:10px 0; border:none; border-top:1px dashed rgba(0,0,0,0.15);">
+        <p style="font-size:0.92rem;"><strong>Jenis Akar:</strong> ${jenis}</p>
+        <p style="font-size:0.85rem; margin-top:4px;">${ket}</p>
+      `;
+
+      drawParabolaOnCanvas('dlCanvas', a, b, c);
+      typesetMath();
+    }
+
+    // --- 9C. Logika Penjelajah Akar ---
+    const rootChallenges = [
+      { level: 'Mudah (PDF)', eq: 'x^2 + 6x + 5 = 0', a: 1, b: 6, c: 5, isReal: true, r1: -1, r2: -5 },
+      { level: 'Menengah (PDF)', eq: 'x^2 + 4x - 12 = 0', a: 1, b: 4, c: -12, isReal: true, r1: 2, r2: -6 },
+      { level: 'Akar Kembar (PDF)', eq: '2x^2 + 4x + 2 = 0', a: 2, b: 4, c: 2, isReal: true, r1: -1, r2: -1 },
+      { level: 'Akar Tidak Real (PDF)', eq: 'x^2 + 2x + 4 = 0', a: 1, b: 2, c: 4, isReal: false, dVal: -12 }
+    ];
+    let currentRootIdx = 0;
+
+    function renderRootExplorer(area) {
+      const ch = rootChallenges[currentRootIdx];
+      area.innerHTML = `
+        <div class="card">
+          <span class="card-corner-star">Tantangan ${currentRootIdx + 1} / ${rootChallenges.length}</span>
+          <h2 style="color:var(--sage-dark); margin-bottom:6px;">🧭 Penjelajah Akar</h2>
+          <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:14px;">
+            Tentukan akar-akar persamaan kuadrat berikut dan amati posisinya pada garis bilangan!
+          </p>
+
+          <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;">
+            ${rootChallenges.map((item, idx) => `
+              <button class="btn btn-sm ${idx === currentRootIdx ? 'btn-primary' : 'btn-outline'}" onclick="selectRootChallenge(${idx})">
+                Level ${idx + 1}: ${item.level}
+              </button>
+            `).join('')}
+          </div>
+
+          <div class="formula-box">$$${ch.eq}$$</div>
+
+          ${ch.isReal ? `
+            <div class="grid-2" style="margin-bottom:14px;">
+              <div>
+                <label style="font-weight:700; font-size:0.88rem;">Masukkan Akar Pertama ($x_1$):</label>
+                <input type="number" step="any" id="reInputX1" placeholder="Contoh: 2">
+              </div>
+              <div>
+                <label style="font-weight:700; font-size:0.88rem;">Masukkan Akar Kedua ($x_2$):</label>
+                <input type="number" step="any" id="reInputX2" placeholder="Contoh: -6">
+              </div>
+            </div>
+            <button class="btn btn-primary" onclick="checkRootAnswer()">Periksa Akar-akar ✔</button>
+          ` : `
+            <div class="sticky-note peach" style="margin-bottom:14px;">
+              <strong>Perhatian!</strong> Cek nilai diskriminan $D = b^2 - 4ac$ terlebih dahulu sebelum meletakkan titik pada garis bilangan real!
+            </div>
+            <div style="margin-bottom:14px;">
+              <label style="font-weight:700; font-size:0.88rem;">Pilih Jenis Akar Persamaan Ini:</label>
+              <select id="reSelectType">
+                <option value="">-- Pilih Jenis Akar --</option>
+                <option value="real2">Dua Akar Real Berbeda (D > 0)</option>
+                <option value="real1">Dua Akar Real Kembar (D = 0)</option>
+                <option value="imag">Akar Imajiner / Tidak Real (D < 0)</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" onclick="checkImaginaryRoot()">Identifikasi Jenis Akar ✔</button>
+          `}
+
+          <div id="reFeedback" style="margin-top:16px;"></div>
+
+          <div class="canvas-wrap" style="margin-top:16px; flex-direction:column;">
+            <canvas id="numberLineCanvas" width="520" height="110"></canvas>
+            <span style="font-size:0.78rem; color:var(--text-muted);">Visualisasi Garis Bilangan Real</span>
+          </div>
+        </div>
+      `;
+      drawNumberLine(null, null);
+    }
+
+    function selectRootChallenge(idx) {
+      currentRootIdx = idx;
+      renderActiveLabTool();
+    }
+
+    function checkRootAnswer() {
+      const ch = rootChallenges[currentRootIdx];
+      const u1 = parseFloat(document.getElementById('reInputX1').value);
+      const u2 = parseFloat(document.getElementById('reInputX2').value);
+      const fb = document.getElementById('reFeedback');
+
+      if (isNaN(u1) || isNaN(u2)) {
+        showToast('Masukkan kedua nilai akar terlebih dahulu!');
+        return;
+      }
+
+      const matchDirect = Math.abs(u1 - ch.r1) < 0.01 && Math.abs(u2 - ch.r2) < 0.01;
+      const matchSwap = Math.abs(u1 - ch.r2) < 0.01 && Math.abs(u2 - ch.r1) < 0.01;
+
+      if (matchDirect || matchSwap) {
+        drawNumberLine(ch.r1, ch.r2);
+        appState.labChallenges.rootExplorerDone = true;
+        addPoints(30);
+        fb.innerHTML = `
+          <div class="sticky-note sage">
+            <strong>🎉 Tepat Sekali!</strong> Akar-akar dari $${ch.eq}$ adalah $x_1 = ${ch.r1}$ dan $x_2 = ${ch.r2}$. Perhatikan kedua titik pada garis bilangan di bawah!
+          </div>
+        `;
+      } else {
+        fb.innerHTML = `
+          <div class="sticky-note peach">
+            <strong>💪 Belum tepat!</strong> Coba faktorkan kembali atau gunakan rumus ABC $x_{1,2} = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$.
+          </div>
+        `;
+      }
+      typesetMath();
+    }
+
+    function checkImaginaryRoot() {
+      const val = document.getElementById('reSelectType').value;
+      const fb = document.getElementById('reFeedback');
+      if (val === 'imag') {
+        appState.labChallenges.rootExplorerDone = true;
+        addPoints(30);
+        drawNumberLine(null, null, true);
+        fb.innerHTML = `
+          <div class="sticky-note sage">
+            <strong>🌟 Analisis Cerdas!</strong> Karena $D = 2^2 - 4(1)(4) = -12 < 0$, persamaan ini memiliki <strong>akar imajiner / tidak real</strong> sehingga tidak ada titik potong pada garis bilangan real.
+          </div>
+        `;
+      } else {
+        fb.innerHTML = `
+          <div class="sticky-note peach">
+            <strong>💭 Coba hitung diskriminannya!</strong> Untuk $x^2 + 2x + 4 = 0$, nilai $D = 2^2 - 4(1)(4) = -12$.
+          </div>
+        `;
+      }
+    }
+
+    function drawNumberLine(x1, x2, isImaginary = false) {
+      const canvas = document.getElementById('numberLineCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width;
+      const H = canvas.height;
+      const cy = H / 2 + 6;
+      const cx = W / 2;
+      const step = 30;
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = '#FDFBF7';
+      ctx.fillRect(0, 0, W, H);
+
+      // Garis utama
+      ctx.strokeStyle = '#5B7B65';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(20, cy);
+      ctx.lineTo(W - 20, cy);
+      ctx.stroke();
+
+      ctx.fillStyle = '#2F3E34';
+      ctx.font = '11px Poppins';
+      for (let i = -7; i <= 7; i++) {
+        const px = cx + i * step;
+        ctx.beginPath();
+        ctx.moveTo(px, cy - 6);
+        ctx.lineTo(px, cy + 6);
+        ctx.stroke();
+        ctx.fillText(i, px - 4, cy + 20);
+      }
+
+      if (isImaginary) {
+        ctx.fillStyle = '#82352D';
+        ctx.font = 'bold 13px Nunito';
+        ctx.fillText('Tidak ada akar real pada garis bilangan (D < 0)', cx - 145, 24);
+        return;
+      }
+
+      if (x1 !== null) {
+        const px1 = cx + x1 * step;
+        ctx.fillStyle = '#7EA189';
+        ctx.strokeStyle = '#2F3E34';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(px1, cy, 8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = '#2F3E34';
+        ctx.font = 'bold 12px Nunito';
+        ctx.fillText(`x₁=${x1}`, px1 - 14, cy - 14);
+      }
+
+      if (x2 !== null && x2 !== x1) {
+        const px2 = cx + x2 * step;
+        ctx.fillStyle = '#F4D06F';
+        ctx.strokeStyle = '#2F3E34';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(px2, cy, 8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = '#2F3E34';
+        ctx.font = 'bold 12px Nunito';
+        ctx.fillText(`x₂=${x2}`, px2 - 14, cy - 14);
+      }
+    }
+
+    // --- 9D. Logika Teka-Teki Langkah (Seret & Lepas + Tombol Naik/Turun) ---
+    const puzzleCorrectOrder = [
+      { id: 1, text: '$5x^2 + 10x + 3x + 6 = 0$' },
+      { id: 2, text: '$5x(x + 2) + 3(x + 2) = 0$' },
+      { id: 3, text: '$(5x + 3)(x + 2) = 0$' },
+      { id: 4, text: '$x = -\\frac{3}{5}$ atau $x = -2$' }
+    ];
+
+    let currentPuzzleItems = [
+      puzzleCorrectOrder[2],
+      puzzleCorrectOrder[0],
+      puzzleCorrectOrder[3],
+      puzzleCorrectOrder[1]
+    ];
+    let dragSrcIndex = null;
+
+    function renderStepPuzzle(area) {
+      area.innerHTML = `
+        <div class="card">
+          <span class="card-corner-star">Permainan Urutan</span>
+          <h2 style="color:var(--sage-dark); margin-bottom:6px;">🧩 Teka-Teki Langkah</h2>
+          <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:14px;">
+            Susun potongan langkah faktorisasi untuk persamaan <strong>$5x^2 + 13x + 6 = 0$</strong> dari atas ke bawah secara berurutan! 
+            (Bisa dengan <em>seret & lepas</em> atau tombol panah <strong>▲ / ▼</strong>).
+          </p>
+
+          <div class="formula-box">Soal: $$5x^2 + 13x + 6 = 0$$</div>
+
+          <div class="puzzle-list" id="puzzleListContainer">
+            ${currentPuzzleItems.map((item, idx) => `
+              <div class="puzzle-piece" draggable="true" data-index="${idx}"
+                ondragstart="handleDragStart(event, ${idx})"
+                ondragover="handleDragOver(event)"
+                ondrop="handleDrop(event, ${idx})">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <span style="font-weight:800; color:var(--sage-dark);">☰ Langkah ${idx + 1}:</span>
+                  <span>${item.text}</span>
+                </div>
+                <div class="puzzle-controls">
+                  <button class="move-btn" onclick="movePuzzlePiece(${idx}, -1)" title="Geser Naik">▲</button>
+                  <button class="move-btn" onclick="movePuzzlePiece(${idx}, 1)" title="Geser Turun">▼</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+
+          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:16px;">
+            <button class="btn btn-primary" onclick="checkPuzzleOrder()">Periksa Urutan Langkah ✔</button>
+            <button class="btn btn-outline" onclick="shufflePuzzle()">Acak Ulang 🔀</button>
+          </div>
+
+          <div id="puzzleFeedback" style="margin-top:16px;"></div>
+        </div>
+      `;
+    }
+
+    function handleDragStart(e, idx) {
+      dragSrcIndex = idx;
+      e.currentTarget.classList.add('dragging');
+    }
+
+    function handleDragOver(e) {
+      e.preventDefault();
+    }
+
+    function handleDrop(e, targetIdx) {
+      e.preventDefault();
+      if (dragSrcIndex === null || dragSrcIndex === targetIdx) return;
+      const moved = currentPuzzleItems.splice(dragSrcIndex, 1)[0];
+      currentPuzzleItems.splice(targetIdx, 0, moved);
+      dragSrcIndex = null;
+      renderActiveLabTool();
+    }
+
+    function movePuzzlePiece(idx, dir) {
+      const newIdx = idx + dir;
+      if (newIdx < 0 || newIdx >= currentPuzzleItems.length) return;
+      const temp = currentPuzzleItems[idx];
+      currentPuzzleItems[idx] = currentPuzzleItems[newIdx];
+      currentPuzzleItems[newIdx] = temp;
+      renderActiveLabTool();
+    }
+
+    function shufflePuzzle() {
+      currentPuzzleItems.sort(() => Math.random() - 0.5);
+      renderActiveLabTool();
+    }
+
+    function checkPuzzleOrder() {
+      const isRight = currentPuzzleItems.every((item, idx) => item.id === idx + 1);
+      const fb = document.getElementById('puzzleFeedback');
+
+      if (isRight) {
+        appState.labChallenges.puzzleDone = true;
+        addPoints(50);
+        fb.innerHTML = `
+          <div class="sticky-note sage">
+            <strong>🎉 Luar Biasa! Urutan Benar! (+50 Poin)</strong><br>
+            Suku tengah $13x$ dipecah menjadi $10x + 3x$, kemudian difaktorkan berkelompok menjadi $(5x + 3)(x + 2) = 0$ sehingga diperoleh akar $x = -\\frac{3}{5}$ atau $x = -2$.
+          </div>
+        `;
+        showToast('🎉 Teka-Teki Langkah Selesai!');
+      } else {
+        fb.innerHTML = `
+          <div class="sticky-note peach">
+            <strong>💪 Urutannya masih tertukar!</strong><br>
+            <em>Petunjuk:</em> Mulai dengan memecah $13x$ menjadi $10x + 3x$, lalu keluarkan faktor persekutuan $5x$ dan $3$.
+          </div>
+        `;
+      }
+      typesetMath();
+    }
+
+    // --- 9E. Logika Penyusun Persamaan ---
+    const builderPresets = [
+      { label: 'Level 1 (Bilangan Bulat - Contoh PDF)', r1: -2, r2: 3, coefA: 1, coefB: -1, coefC: -6, factorHint: '(x + 2)(x - 3) = 0' },
+      { label: 'Level 2 (Bilangan Bulat Positif)', r1: 2, r2: 5, coefA: 1, coefB: -7, coefC: 10, factorHint: '(x - 2)(x - 5) = 0' },
+      { label: 'Level 3 (Akar Pecahan - Contoh PDF)', r1: 3, r2: -0.5, coefA: 2, coefB: -5, coefC: -3, factorHint: '(x - 3)(2x + 1) = 0' }
+    ];
+    let currentBuilderIdx = 0;
+
+    function renderEquationBuilder(area) {
+      const bp = builderPresets[currentBuilderIdx];
+      area.innerHTML = `
+        <div class="card">
+          <span class="card-corner-star">Rakit Persamaan</span>
+          <h2 style="color:var(--sage-dark); margin-bottom:6px;">🏗️ Penyusun Persamaan</h2>
+          <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:14px;">
+            Bangun persamaan kuadrat baru $ax^2 + bx + c = 0$ dari akar-akar yang diketahui secara bertahap!
+          </p>
+
+          <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;">
+            ${builderPresets.map((item, idx) => `
+              <button class="btn btn-sm ${idx === currentBuilderIdx ? 'btn-primary' : 'btn-outline'}" onclick="selectBuilderPreset(${idx})">
+                ${item.label}
+              </button>
+            `).join('')}
+          </div>
+
+          <div class="formula-box">
+            Diketahui Akar-akar: $$x_1 = ${bp.r1} \\quad \\text{dan} \\quad x_2 = ${bp.r2 === -0.5 ? '-\\frac{1}{2}' : bp.r2}$$
+          </div>
+
+          <div class="grid-2" style="margin-bottom:14px;">
+            <div class="sticky-note sage">
+              <strong>Tahap 1: Konfirmasi Akar</strong>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px;">
+                <div>
+                  <label style="font-size:0.8rem;">Nilai $x_1$:</label>
+                  <input type="number" step="any" id="ebX1" placeholder="${bp.r1}">
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;">Nilai $x_2$:</label>
+                  <input type="number" step="any" id="ebX2" placeholder="${bp.r2}">
+                </div>
+              </div>
+            </div>
+
+            <div class="sticky-note">
+              <strong>Tahap 2: Jumlah & Hasil Kali Akar</strong>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px;">
+                <div>
+                  <label style="font-size:0.8rem;">$x_1 + x_2$:</label>
+                  <input type="number" step="any" id="ebSum" placeholder="Desimal/bulat">
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;">$x_1 \\cdot x_2$:</label>
+                  <input type="number" step="any" id="ebProd" placeholder="Desimal/bulat">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sticky-note peach" style="margin-bottom:16px;">
+            <strong>Tahap 3: Koefisien Persamaan Kuadrat Akhir ($ax^2 + bx + c = 0$ bilangan bulat)</strong>
+            <div class="grid-3" style="margin-top:8px;">
+              <div>
+                <label style="font-size:0.82rem;">Koefisien $a$:</label>
+                <input type="number" id="ebA" placeholder="a">
+              </div>
+              <div>
+                <label style="font-size:0.82rem;">Koefisien $b$:</label>
+                <input type="number" id="ebB" placeholder="b">
+              </div>
+              <div>
+                <label style="font-size:0.82rem;">Konstanta $c$:</label>
+                <input type="number" id="ebC" placeholder="c">
+              </div>
+            </div>
+          </div>
+
+          <button class="btn btn-primary" onclick="checkEquationBuilder()">Bangun & Periksa Persamaan 🏗️✔</button>
+          <div id="ebFeedback" style="margin-top:16px;"></div>
+        </div>
+      `;
+    }
+
+    function selectBuilderPreset(idx) {
+      currentBuilderIdx = idx;
+      renderActiveLabTool();
+    }
+
+    function checkEquationBuilder() {
+      const bp = builderPresets[currentBuilderIdx];
+      const x1 = parseFloat(document.getElementById('ebX1').value);
+      const x2 = parseFloat(document.getElementById('ebX2').value);
+      const sum = parseFloat(document.getElementById('ebSum').value);
+      const prod = parseFloat(document.getElementById('ebProd').value);
+      const a = parseInt(document.getElementById('ebA').value, 10);
+      const b = parseInt(document.getElementById('ebB').value, 10);
+      const c = parseInt(document.getElementById('ebC').value, 10);
+      const fb = document.getElementById('ebFeedback');
+
+      const expectedSum = bp.r1 + bp.r2;
+      const expectedProd = bp.r1 * bp.r2;
+
+      const step1Ok = Math.abs(x1 - bp.r1) < 0.01 && Math.abs(x2 - bp.r2) < 0.01;
+      const step2Ok = Math.abs(sum - expectedSum) < 0.01 && Math.abs(prod - expectedProd) < 0.01;
+      const step3Ok = (a === bp.coefA && b === bp.coefB && c === bp.coefC);
+
+      if (step1Ok && step2Ok && step3Ok) {
+        appState.labChallenges.builderDone = true;
+        addPoints(40);
+        fb.innerHTML = `
+          <div class="sticky-note sage">
+            <strong>🎉 Sukses Merakit Persamaan! (+40 Poin)</strong><br>
+            Bentuk faktor: $${bp.factorHint}$<br>
+            Persamaan kuadrat akhir: $\\mathbf{${bp.coefA === 1 ? '' : bp.coefA}x^2 ${bp.coefB >= 0 ? '+ ' + bp.coefB : '- ' + Math.abs(bp.coefB)}x ${bp.coefC >= 0 ? '+ ' + bp.coefC : '- ' + Math.abs(bp.coefC)} = 0}$
+          </div>
+        `;
+        showToast('🎉 Penyusun Persamaan Berhasil!');
+      } else {
+        let errs = [];
+        if (!step1Ok) errs.push('Tahap 1 (nilai x₁ dan x₂)');
+        if (!step2Ok) errs.push('Tahap 2 (jumlah dan hasil kali akar)');
+        if (!step3Ok) errs.push('Tahap 3 (koefisien akhir a, b, c dalam bilangan bulat)');
+        fb.innerHTML = `
+          <div class="sticky-note peach">
+            <strong>🔍 Periksa kembali bagian berikut:</strong> ${errs.join(', ')}.<br>
+            <em>Rumus bantuan:</em> $x^2 - (x_1 + x_2)x + (x_1 x_2) = 0$.
+          </div>
+        `;
+      }
+      typesetMath();
+    }
+
+    // =========================================================================
+    // 10. HALAMAN 5: MISI MINI
+    // =========================================================================
+    function renderMissions() {
+      const container = document.getElementById('page-missions');
+      container.innerHTML = `
+        <div class="mascot-wrapper">
+          <div class="mascot-avatar">${getMascotSVG('happy', 76)}</div>
+          <div class="speech-bubble">
+            <strong>Arena Misi Mini! 🎯</strong><br>
+            Uji kemampuanmu pada keempat misi singkat dari setiap modul. Selesaikan semuanya untuk mengumpulkan poin ekstra!
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <!-- Misi 01 -->
+          <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <span style="font-weight:800; color:var(--sage-dark);">MISI 01 • +40 Poin</span>
+              <span class="status-pill ${appState.missions[1] ? 'status-completed' : 'status-not-started'}">
+                ${appState.missions[1] ? 'Selesai ✔' : 'Aktif'}
+              </span>
+            </div>
+            <h3>Identifikasi Koefisien</h3>
+            <p style="font-size:0.88rem; color:var(--text-muted); margin:8px 0;">
+              Tentukan nilai $a$, $b$, dan $c$ dari persamaan kuadrat: <strong>$3x^2 - 7x + 4 = 0$</strong>
+            </p>
+            <div class="grid-3" style="margin:10px 0;">
+              <input type="number" id="mis1A" placeholder="a = ?">
+              <input type="number" id="mis1B" placeholder="b = ?">
+              <input type="number" id="mis1C" placeholder="c = ?">
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="submitMission1()">Kirim Jawaban</button>
+            <div id="mis1Fb" style="margin-top:10px;"></div>
+          </div>
+
+          <!-- Misi 02 -->
+          <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <span style="font-weight:800; color:var(--sage-dark);">MISI 02 • +40 Poin</span>
+              <span class="status-pill ${appState.missions[2] ? 'status-completed' : 'status-not-started'}">
+                ${appState.missions[2] ? 'Selesai ✔' : 'Aktif'}
+              </span>
+            </div>
+            <h3>Taklukkan Diskriminan</h3>
+            <p style="font-size:0.88rem; color:var(--text-muted); margin:8px 0;">
+              Hitung nilai diskriminan $D = b^2 - 4ac$ dari persamaan: <strong>$x^2 - 6x + 9 = 0$</strong>
+            </p>
+            <div style="margin:10px 0;">
+              <input type="number" id="mis2D" placeholder="Masukkan nilai D = ?">
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="submitMission2()">Kirim Jawaban</button>
+            <div id="mis2Fb" style="margin-top:10px;"></div>
+          </div>
+
+          <!-- Misi 03 -->
+          <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <span style="font-weight:800; color:var(--sage-dark);">MISI 03 • +50 Poin</span>
+              <span class="status-pill ${appState.missions[3] ? 'status-completed' : 'status-not-started'}">
+                ${appState.missions[3] ? 'Selesai ✔' : 'Aktif'}
+              </span>
+            </div>
+            <h3>Selesaikan Persamaan</h3>
+            <p style="font-size:0.88rem; color:var(--text-muted); margin:8px 0;">
+              Tentukan akar-akar positif dan negatif dari: <strong>$x^2 - 9 = 0$</strong> (Pola $x^2 - y^2 = 0$)
+            </p>
+            <div class="grid-2" style="margin:10px 0;">
+              <input type="number" id="mis3X1" placeholder="x₁ = ?">
+              <input type="number" id="mis3X2" placeholder="x₂ = ?">
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="submitMission3()">Kirim Jawaban</button>
+            <div id="mis3Fb" style="margin-top:10px;"></div>
+          </div>
+
+          <!-- Misi 04 -->
+          <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <span style="font-weight:800; color:var(--sage-dark);">MISI 04 • +50 Poin</span>
+              <span class="status-pill ${appState.missions[4] ? 'status-completed' : 'status-not-started'}">
+                ${appState.missions[4] ? 'Selesai ✔' : 'Aktif'}
+              </span>
+            </div>
+            <h3>Susun Persamaan Baru</h3>
+            <p style="font-size:0.88rem; color:var(--text-muted); margin:8px 0;">
+              Jika $x_1 + x_2 = 5$ dan $x_1 x_2 = 6$, maka persamaan kuadratnya adalah $x^2 + bx + c = 0$. Tentukan nilai $b$ dan $c$!
+            </p>
+            <div class="grid-2" style="margin:10px 0;">
+              <input type="number" id="mis4B" placeholder="Nilai b = ?">
+              <input type="number" id="mis4C" placeholder="Nilai c = ?">
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="submitMission4()">Kirim Jawaban</button>
+            <div id="mis4Fb" style="margin-top:10px;"></div>
+          </div>
+        </div>
+      `;
+    }
+
+    function submitMission1() {
+      const a = parseInt(document.getElementById('mis1A').value, 10);
+      const b = parseInt(document.getElementById('mis1B').value, 10);
+      const c = parseInt(document.getElementById('mis1C').value, 10);
+      const fb = document.getElementById('mis1Fb');
+
+      if (a === 3 && b === -7 && c === 4) {
+        if (!appState.missions[1]) {
+          appState.missions[1] = true;
+          addPoints(40);
+        }
+        fb.innerHTML = `<div class="sticky-note sage">🎉 Benar! a = 3, b = −7, c = 4. Misi 01 Selesai!</div>`;
+        renderMissions();
+      } else {
+        fb.innerHTML = `<div class="sticky-note peach">💪 Belum tepat! Perhatikan tanda negatif pada suku −7x.</div>`;
+      }
+    }
+
+    function submitMission2() {
+      const d = parseInt(document.getElementById('mis2D').value, 10);
+      const fb = document.getElementById('mis2Fb');
+
+      if (d === 0) {
+        if (!appState.missions[2]) {
+          appState.missions[2] = true;
+          addPoints(40);
+        }
+        fb.innerHTML = `<div class="sticky-note sage">🎉 Tepat! D = (−6)² − 4(1)(9) = 36 − 36 = 0.</div>`;
+        renderMissions();
+      } else {
+        fb.innerHTML = `<div class="sticky-note peach">💪 Coba lagi! Hitung (−6)² − 4(1)(9).</div>`;
+      }
+    }
+
+    function submitMission3() {
+      const x1 = parseInt(document.getElementById('mis3X1').value, 10);
+      const x2 = parseInt(document.getElementById('mis3X2').value, 10);
+      const fb = document.getElementById('mis3Fb');
+
+      if ((x1 === 3 && x2 === -3) || (x1 === -3 && x2 === 3)) {
+        if (!appState.missions[3]) {
+          appState.missions[3] = true;
+          addPoints(50);
+        }
+        fb.innerHTML = `<div class="sticky-note sage">🎉 Hebat! (x + 3)(x − 3) = 0 menghasilkan x = 3 atau x = −3.</div>`;
+        renderMissions();
+      } else {
+        fb.innerHTML = `<div class="sticky-note peach">💪 Belum tepat! Gunakan faktorisasi (x + 3)(x − 3) = 0.</div>`;
+      }
+    }
+
+    function submitMission4() {
+      const b = parseInt(document.getElementById('mis4B').value, 10);
+      const c = parseInt(document.getElementById('mis4C').value, 10);
+      const fb = document.getElementById('mis4Fb');
+
+      if (b === -5 && c === 6) {
+        if (!appState.missions[4]) {
+          appState.missions[4] = true;
+          addPoints(50);
+        }
+        fb.innerHTML = `<div class="sticky-note sage">🎉 Sempurna! x² − (5)x + 6 = 0 → b = −5 dan c = 6.</div>`;
+        renderMissions();
+      } else {
+        fb.innerHTML = `<div class="sticky-note peach">💪 Ingat rumusnya: x² − (x₁ + x₂)x + (x₁x₂) = 0.</div>`;
+      }
+    }
+
+    // =========================================================================
+    // 11. HALAMAN 6: EVALUASI AKHIR (15 SOAL PILIHAN GANDA)
+    // =========================================================================
+    const evalQuestions = [
+      {
+        q: 'Bentuk umum persamaan kuadrat dalam variabel $x$ yang benar adalah...',
+        opts: ['$ax + b = 0$', '$ax^2 + bx + c = 0$ dengan $a \\neq 0$', '$ax^3 + bx^2 + c = 0$', '$ax^2 + by^2 = c$'],
+        ans: 1,
+        exp: 'Persamaan kuadrat memiliki pangkat tertinggi dua dengan bentuk umum $ax^2 + bx + c = 0$ dan $a \\neq 0$.'
+      },
+      {
+        q: 'Pada persamaan kuadrat $4x^2 - 5x + 9 = 0$, nilai konstanta $c$ adalah...',
+        opts: ['$4$', '$-5$', '$9$', '$-9$'],
+        ans: 2,
+        exp: 'Pada $ax^2 + bx + c = 0$, nilai $a = 4$, $b = -5$, dan konstanta $c = 9$.'
+      },
+      {
+        q: 'Jika nilai koefisien $a < 0$ pada persamaan kuadrat, maka bentuk kurva parabolanya adalah...',
+        opts: ['Terbuka ke atas (cekung)', 'Terbuka ke bawah (cembung)', 'Garis lurus mendatar', 'Terbuka ke kanan'],
+        ans: 1,
+        exp: 'Sesuai materi, jika $a < 0$ maka parabola terbuka ke bawah (cembung).'
+      },
+      {
+        q: 'Grafik parabola $y = 2x^2 - 3x$ akan memotong sumbu $y$ di titik...',
+        opts: ['$(0, 2)$', '$(0, -3)$', 'Titik pusat $(0, 0)$', '$(2, -3)$'],
+        ans: 2,
+        exp: 'Nilai konstanta $c = 0$, sehingga grafik memotong sumbu $y$ di pusat $(0, 0)$.'
+      },
+      {
+        q: 'Rumus diskriminan ($D$) dari persamaan kuadrat $ax^2 + bx + c = 0$ adalah...',
+        opts: ['$D = b^2 + 4ac$', '$D = b^2 - 4ac$', '$D = 4ac - b^2$', '$D = \\frac{-b}{2a}$'],
+        ans: 1,
+        exp: 'Diskriminan dirumuskan sebagai $D = b^2 - 4ac$.'
+      },
+      {
+        q: 'Nilai diskriminan dari persamaan $x^2 + 4x + 2 = 0$ adalah...',
+        opts: ['$8$', '$16$', '$24$', '$0$'],
+        ans: 0,
+        exp: '$D = 4^2 - 4(1)(2) = 16 - 8 = 8$.'
+      },
+      {
+        q: 'Persamaan kuadrat $2x^2 + 4x + 2 = 0$ memiliki nilai $D = 0$, yang berarti jenis akarnya adalah...',
+        opts: ['Dua akar real berbeda', 'Dua akar real sama / kembar ($x_1 = x_2$)', 'Akar imajiner / tidak real', 'Tidak memiliki penyelesaian'],
+        ans: 1,
+        exp: 'Jika $D = 0$, persamaan kuadrat menghasilkan dua akar real kembar ($x_1 = x_2$).'
+      },
+      {
+        q: 'Jenis akar dari persamaan kuadrat $x^2 + 2x + 4 = 0$ adalah...',
+        opts: ['Akar real berbeda', 'Akar real kembar', 'Akar imajiner / tidak real', 'Akar rasional positif'],
+        ans: 2,
+        exp: '$D = 2^2 - 4(1)(4) = 4 - 16 = -12 < 0$, sehingga akarnya imajiner / tidak real.'
+      },
+      {
+        q: 'Bentuk faktorisasi dari pola selisih kuadrat $x^2 - y^2 = 0$ adalah...',
+        opts: ['$(x + y)^2 = 0$', '$(x - y)^2 = 0$', '$(x + y)(x - y) = 0$', '$x(x - y) = 0$'],
+        ans: 2,
+        exp: 'Pola $x^2 - y^2 = 0$ difaktorkan menjadi $(x + y)(x - y) = 0$.'
+      },
+      {
+        q: 'Himpunan penyelesaian dari $5x^2 + 13x + 6 = 0$ adalah...',
+        opts: ['$x = -\\frac{3}{5}$ atau $x = -2$', '$x = \\frac{3}{5}$ atau $x = 2$', '$x = -3$ atau $x = -2$', '$x = 5$ atau $x = 6$'],
+        ans: 0,
+        exp: '$(5x + 3)(x + 2) = 0 \\Rightarrow x = -\\frac{3}{5}$ atau $x = -2$.'
+      },
+      {
+        q: 'Dalam menyelesaikan $x^2 + 6x + 5 = 0$ dengan metode kuadrat sempurna, kedua ruas pada $x^2 + 6x = -5$ harus ditambah dengan bilangan...',
+        opts: ['$3$', '$6$', '$9$', '$25$'],
+        ans: 2,
+        exp: 'Untuk membentuk $(x + 3)^2 = x^2 + 6x + 9$, kedua ruas ditambahkan $9$.'
+      },
+      {
+        q: 'Akar-akar persamaan kuadrat $x^2 + 4x - 12 = 0$ yang dihitung dengan rumus ABC adalah...',
+        opts: ['$x_1 = 2$ dan $x_2 = -6$', '$x_1 = -2$ dan $x_2 = 6$', '$x_1 = 3$ dan $x_2 = -4$', '$x_1 = 4$ dan $x_2 = -3$'],
+        ans: 0,
+        exp: '$x = \\frac{-4 \\pm \\sqrt{64}}{2} = \\frac{-4 \\pm 8}{2} \\Rightarrow x_1 = 2$ atau $x_2 = -6$.'
+      },
+      {
+        q: 'Persamaan kuadrat yang memiliki akar-akar $-2$ dan $3$ adalah...',
+        opts: ['$x^2 + x - 6 = 0$', '$x^2 - x - 6 = 0$', '$x^2 - x + 6 = 0$', '$x^2 + 5x + 6 = 0$'],
+        ans: 1,
+        exp: '$(x - (-2))(x - 3) = (x + 2)(x - 3) = x^2 - x - 6 = 0$.'
+      },
+      {
+        q: 'Persamaan kuadrat yang memiliki akar-akar $3$ dan $-\\frac{1}{2}$ adalah...',
+        opts: ['$2x^2 - 5x - 3 = 0$', '$2x^2 + 5x - 3 = 0$', '$2x^2 - 5x + 3 = 0$', '$x^2 - 5x - 3 = 0$'],
+        ans: 0,
+        exp: '$x^2 - \\frac{5}{2}x - \\frac{3}{2} = 0$, dikalikan 2 menjadi $2x^2 - 5x - 3 = 0$.'
+      },
+      {
+        q: 'Jika diketahui jumlah akar-akar persamaan kuadrat $x_1 + x_2 = 7$ dan hasil kalinya $x_1 x_2 = 10$, maka persamaan kuadratnya adalah...',
+        opts: ['$x^2 + 7x + 10 = 0$', '$x^2 - 7x + 10 = 0$', '$x^2 - 7x - 10 = 0$', '$x^2 + 10x + 7 = 0$'],
+        ans: 1,
+        exp: 'Substitusi ke $x^2 - (x_1 + x_2)x + (x_1 x_2) = 0$ menghasilkan $x^2 - 7x + 10 = 0$.'
+      }
+    ];
+
+    let currentEvalIdx = 0;
+    let userEvalAnswers = {};
+    let evalSubmitted = false;
+
+    function renderEvaluation() {
+      const container = document.getElementById('page-evaluation');
+
+      if (evalSubmitted) {
+        renderEvaluationResult(container);
+        return;
+      }
+
+      const qObj = evalQuestions[currentEvalIdx];
+      const answeredCount = Object.keys(userEvalAnswers).length;
+
+      container.innerHTML = `
+        <div class="mascot-wrapper">
+          <div class="mascot-avatar">${getMascotSVG('thinking', 74)}</div>
+          <div class="speech-bubble">
+            <strong>Evaluasi Akhir — Uji Pemahaman Akhir! 🏆</strong><br>
+            Jawab seluruh <strong>${evalQuestions.length} soal</strong> berikut dengan teliti. Kamu bisa berpindah nomor soal kapan saja sebelum menekan tombol <strong>Kumpulkan Evaluasi</strong>.
+          </div>
+        </div>
+
+        <!-- Indikator Nomor Soal -->
+        <div class="card" style="margin-bottom:18px; padding:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <strong style="font-size:0.9rem; color:var(--sage-dark);">Navigasi Nomor Soal (${answeredCount}/${evalQuestions.length} terjawab)</strong>
+            <span style="font-size:0.82rem; color:var(--text-muted);">Soal ke-${currentEvalIdx + 1}</span>
+          </div>
+          <div style="display:flex; flex-wrap:wrap; gap:6px;">
+            ${evalQuestions.map((_, i) => {
+              const isCurr = i === currentEvalIdx;
+              const isAns = userEvalAnswers[i] !== undefined;
+              let bg = 'var(--off-white)';
+              let col = 'var(--text-main)';
+              if (isCurr) { bg = 'var(--sage-dark)'; col = '#FFF'; }
+              else if (isAns) { bg = 'var(--pastel-yellow)'; col = '#6B5010'; }
+              return `
+                <button onclick="jumpEvalQuestion(${i})" style="width:34px; height:34px; border-radius:10px; border:2px solid var(--sage-soft); background:${bg}; color:${col}; font-weight:700; cursor:pointer;">
+                  ${i + 1}
+                </button>
+              `;
+            }).join('')}
+          </div>
+        </div>
+
+        <!-- Kartu Soal Aktif -->
+        <div class="card">
+          <span class="card-corner-star">Soal ${currentEvalIdx + 1} dari ${evalQuestions.length}</span>
+          <h3 style="color:var(--text-main); margin:10px 0 18px; font-family:'Poppins', sans-serif; font-size:1.05rem;">
+            ${currentEvalIdx + 1}. ${qObj.q}
+          </h3>
+
+          <div>
+            ${qObj.opts.map((opt, oIdx) => {
+              const isSel = userEvalAnswers[currentEvalIdx] === oIdx;
+              const letter = ['A', 'B', 'C', 'D'][oIdx];
+              return `
+                <div class="quiz-option ${isSel ? 'selected' : ''}" onclick="selectEvalOption(${oIdx})">
+                  <strong style="color:var(--sage-dark);">${letter}.</strong> <span>${opt}</span>
+                </div>
+              `;
+            }).join('')}
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:22px; padding-top:16px; border-top:2px dashed var(--border-soft);">
+            <button class="btn btn-outline" ${currentEvalIdx === 0 ? 'disabled style="opacity:0.4;"' : `onclick="jumpEvalQuestion(${currentEvalIdx - 1})"`}>
+              ← Sebelumnya
+            </button>
+            ${currentEvalIdx < evalQuestions.length - 1
+              ? `<button class="btn btn-primary" onclick="jumpEvalQuestion(${currentEvalIdx + 1})">Berikutnya →</button>`
+              : `<button class="btn btn-peach" onclick="confirmSubmitEvaluation()">Kumpulkan Evaluasi 🏆</button>`
+            }
+          </div>
+        </div>
+      `;
+    }
+
+    function jumpEvalQuestion(idx) {
+      currentEvalIdx = idx;
+      renderEvaluation();
+      typesetMath();
+    }
+
+    function selectEvalOption(oIdx) {
+      userEvalAnswers[currentEvalIdx] = oIdx;
+      renderEvaluation();
+      typesetMath();
+    }
+
+    function confirmSubmitEvaluation() {
+      const answered = Object.keys(userEvalAnswers).length;
+      const total = evalQuestions.length;
+      const msg = answered < total
+        ? `Kamu baru menjawab <strong>${answered} dari ${total} soal</strong>. Apakah kamu yakin ingin mengumpulkan evaluasi sekarang?`
+        : `Kamu telah menjawab seluruh <strong>${total} soal</strong>! Siap melihat hasil dan sertifikat pencapaianmu?`;
+
+      showModal({
+        title: 'Konfirmasi Pengumpulan Evaluasi',
+        body: msg,
+        mood: 'thinking',
+        buttons: [
+          { text: 'Periksa Lagi', primary: false },
+          { text: 'Ya, Kumpulkan Sekarang!', primary: true, onClick: finalizeEvaluation }
+        ]
+      });
+    }
+
+    function finalizeEvaluation() {
+      let correct = 0;
+      evalQuestions.forEach((q, idx) => {
+        if (userEvalAnswers[idx] === q.ans) correct++;
+      });
+
+      const score = Math.round((correct / evalQuestions.length) * 100);
+      evalSubmitted = true;
+
+      if (!appState.evaluation.completed || score > appState.evaluation.score) {
+        appState.evaluation.score = score;
+        appState.evaluation.correctCount = correct;
+      }
+      if (!appState.evaluation.completed) {
+        addPoints(100);
+      }
+      appState.evaluation.completed = true;
+      appState.evaluation.answers = { ...userEvalAnswers };
+      saveState();
+
+      renderEvaluation();
+      typesetMath();
+    }
+
+    function renderEvaluationResult(container) {
+      let correct = 0;
+      evalQuestions.forEach((q, idx) => {
+        if (userEvalAnswers[idx] === q.ans) correct++;
+      });
+      const wrong = evalQuestions.length - correct;
+      const score = Math.round((correct / evalQuestions.length) * 100);
+
+      let motivation = '';
+      let mood = 'happy';
+      if (score >= 85) {
+        motivation = 'Luar biasa! Penguasaanmu terhadap materi Persamaan Kuadrat sangat mengagumkan. Kamu layak menyandang gelar Juara Kuadrat!';
+        mood = 'amazed';
+      } else if (score >= 70) {
+        motivation = 'Kerja bagus! Kamu sudah memahami sebagian besar konsep dengan baik. Tinjau kembali pembahasan soal di bawah untuk menyempurnakannya!';
+        mood = 'happy';
+      } else {
+        motivation = 'Tetap semangat! Belajar matematika adalah proses bertahap. Yuk pelajari pembahasan di bawah dan ulangi evaluasi kapan saja!';
+        mood = 'encourage';
+      }
+
+      const reviewHTML = evalQuestions.map((q, idx) => {
+        const uAns = userEvalAnswers[idx];
+        const isRight = uAns === q.ans;
+        const letters = ['A', 'B', 'C', 'D'];
+        return `
+          <div style="background:${isRight ? '#F1F8F3' : '#FFF5F4'}; border:2px solid ${isRight ? '#8FD19E' : '#F4978E'}; border-radius:16px; padding:16px; margin-bottom:12px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+              <strong>Soal ${idx + 1}</strong>
+              <span style="font-weight:700; color:${isRight ? '#1E6B34' : '#82352D'};">${isRight ? '✔ Benar' : '✘ Kurang Tepat'}</span>
+            </div>
+            <p style="font-size:0.92rem; margin-bottom:8px;">${q.q}</p>
+            <p style="font-size:0.86rem;">
+              <strong>Jawabanmu:</strong> ${uAns !== undefined ? letters[uAns] + '. ' + q.opts[uAns] : '<em>Tidak dijawab</em>'}<br>
+              <strong>Kunci Jawaban:</strong> ${letters[q.ans]}. ${q.opts[q.ans]}
+            </p>
+            <div style="margin-top:8px; font-size:0.85rem; color:var(--text-muted); background:var(--white); padding:8px 12px; border-radius:10px;">
+              💡 <strong>Pembahasan:</strong> ${q.exp}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      container.innerHTML = `
+        <div class="cert-card">
+          <div style="margin-bottom:10px;">${getMascotSVG(mood, 96)}</div>
+          <span style="background:var(--pastel-yellow); border:2px solid var(--yellow-accent); padding:4px 16px; border-radius:99px; font-weight:800; font-size:0.82rem;">
+            🏅 SERTIFIKAT PENCAPAIAN
+          </span>
+          <h2 style="color:var(--sage-dark); font-size:1.8rem; margin:12px 0 6px;">Hasil Evaluasi Quadratic Space</h2>
+          <div style="font-size:3rem; font-weight:800; color:var(--sage-dark); font-family:'Fredoka', sans-serif; margin:8px 0;">
+            Nilai: ${score}
+          </div>
+          <div style="display:flex; justify-content:center; gap:20px; margin:12px 0; font-weight:700;">
+            <span style="color:#1E6B34;">✔ Benar: ${correct}</span>
+            <span style="color:#82352D;">✘ Salah: ${wrong}</span>
+            <span style="color:var(--sage-dark);">📋 Total: ${evalQuestions.length} Soal</span>
+          </div>
+          <p style="max-width:600px; margin:12px auto 20px; font-size:0.95rem; color:var(--text-main);">
+            "${motivation}"
+          </p>
+          <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+            <button class="btn btn-primary" onclick="retakeEvaluation()">🔄 Ulangi Evaluasi</button>
+            <button class="btn btn-secondary" onclick="navigateTo('progress')">🌟 Lihat Lencana & Progres</button>
+          </div>
+        </div>
+
+        <h3 style="color:var(--sage-dark); margin-bottom:14px;">📖 Pembahasan Lengkap Setiap Soal</h3>
+        ${reviewHTML}
+      `;
+    }
+
+    function retakeEvaluation() {
+      currentEvalIdx = 0;
+      userEvalAnswers = {};
+      evalSubmitted = false;
+      renderEvaluation();
+      typesetMath();
+    }
+
+    // =========================================================================
+    // 12. HALAMAN 7: PROGRES SAYA & LENCANA PENCAPAIAN
+    // =========================================================================
+    function renderProgress() {
+      const pct = calculateOverallProgress();
+      const completedMods = Object.values(appState.modules).filter(m => m.status === 'completed').length;
+      const completedMissions = Object.values(appState.missions).filter(Boolean).length;
+
+      const badgeList = [
+        {
+          key: 'firstStep',
+          icon: '🌱',
+          title: 'Langkah Pertama',
+          desc: 'Menyelesaikan aktivitas belajar atau tantangan pertama di Quadratic Space.'
+        },
+        {
+          key: 'conceptExplorer',
+          icon: '🧭',
+          title: 'Penjelajah Konsep',
+          desc: 'Menuntaskan Modul 01 serta tantangan parabola terbuka ke bawah & potong sumbu y positif.'
+        },
+        {
+          key: 'discriminantMaster',
+          icon: '🔬',
+          title: 'Master Diskriminan',
+          desc: 'Menuntaskan Modul 02 serta berhasil menemukan D = 0 pada Lab Diskriminan.'
+        },
+        {
+          key: 'equationSolver',
+          icon: '🧩',
+          title: 'Pemecah Persamaan',
+          desc: 'Menuntaskan Modul 03 serta berhasil menyusun urutan Teka-Teki Langkah.'
+        },
+        {
+          key: 'quadraticChampion',
+          icon: '👑',
+          title: 'Juara Kuadrat',
+          desc: 'Menyelesaikan seluruh 4 modul pembelajaran dan meraih nilai Evaluasi Akhir ≥ 80.'
+        }
+      ];
+
+      const container = document.getElementById('page-progress');
+      container.innerHTML = `
+        <div class="mascot-wrapper">
+          <div class="mascot-avatar">${getMascotSVG('amazed', 76)}</div>
+          <div class="speech-bubble">
+            <strong>Dasbor Pencapaianmu! 🌟</strong><br>
+            Semua progres belajarmu tersimpan otomatis di browser ini. Kumpulkan seluruh <strong>5 Lencana Pencapaian</strong> dengan menyelesaikan aktivitas pada setiap modul dan laboratorium!
+          </div>
+        </div>
+
+        <div class="grid-3" style="margin-bottom:24px;">
+          <div class="card" style="text-align:center;">
+            <div style="font-size:2.2rem; font-weight:800; color:var(--sage-dark); font-family:'Fredoka', sans-serif;">${pct}%</div>
+            <div style="font-weight:700; color:var(--text-muted); font-size:0.9rem;">Progres Keseluruhan</div>
+            <div class="progress-track" style="margin-top:10px;">
+              <div class="progress-fill" style="width:${pct}%;"></div>
+            </div>
+          </div>
+
+          <div class="card" style="text-align:center;">
+            <div style="font-size:2.2rem; font-weight:800; color:var(--sage-dark); font-family:'Fredoka', sans-serif;">${completedMods} / 4</div>
+            <div style="font-weight:700; color:var(--text-muted); font-size:0.9rem;">Modul Selesai</div>
+            <div style="font-size:0.82rem; color:var(--sage-dark); margin-top:8px;">
+              🎯 Misi Mini: ${completedMissions} / 4 Selesai
+            </div>
+          </div>
+
+          <div class="card" style="text-align:center;">
+            <div style="font-size:2.2rem; font-weight:800; color:var(--sage-dark); font-family:'Fredoka', sans-serif;">
+              ${appState.evaluation.completed ? appState.evaluation.score : '-'}
+            </div>
+            <div style="font-weight:700; color:var(--text-muted); font-size:0.9rem;">Nilai Evaluasi Akhir</div>
+            <div style="font-size:0.82rem; color:var(--sage-dark); margin-top:8px;">
+              ✨ Total Poin: ${appState.points}
+            </div>
+          </div>
+        </div>
+
+        <!-- Status Per Modul -->
+        <div class="card" style="margin-bottom:24px;">
+          <h3 style="color:var(--sage-dark); margin-bottom:14px;">📚 Status Modul Pembelajaran</h3>
+          <div class="grid-2">
+            ${modulesMeta.map(mod => {
+              const st = appState.modules[mod.id].status;
+              return `
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 16px; background:var(--off-white); border-radius:14px; border:1.5px solid var(--border-soft);">
+                  <div>
+                    <strong style="font-size:0.9rem;">${mod.code}: ${mod.title}</strong>
+                  </div>
+                  <span class="status-pill ${st === 'completed' ? 'status-completed' : (st === 'in-progress' ? 'status-in-progress' : 'status-not-started')}">
+                    ${st === 'completed' ? 'Selesai ✔' : (st === 'in-progress' ? 'Sedang Berjalan' : 'Belum Dimulai')}
+                  </span>
+                </div>
+              `;
+            }).join('')}
+          </div>
+          <div style="margin-top:18px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+            <button class="btn btn-primary" onclick="navigateTo('map')">Lanjutkan Pembelajaran 🚀</button>
+            <button class="btn btn-outline btn-sm" onclick="confirmResetProgress()">Atur Ulang Progres</button>
+          </div>
+        </div>
+
+        <!-- Koleksi Lencana -->
+        <h3 style="color:var(--sage-dark); margin-bottom:14px;">🏅 Koleksi Lencana Pencapaian</h3>
+        <div class="grid-3">
+          ${badgeList.map(b => {
+            const unlocked = appState.badges[b.key];
+            return `
+              <div class="badge-card ${unlocked ? 'unlocked' : 'locked'}">
+                <span class="badge-icon">${b.icon}</span>
+                <h4 style="color:var(--sage-dark); margin-bottom:6px;">${b.title}</h4>
+                <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:10px;">${b.desc}</p>
+                <span class="status-pill ${unlocked ? 'status-completed' : 'status-not-started'}">
+                  ${unlocked ? 'Terbuka ✔' : 'Terkunci 🔒'}
+                </span>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function confirmResetProgress() {
+      showModal({
+        title: 'Atur Ulang Seluruh Progres?',
+        body: 'Semua status modul, skor misi, lencana, dan nilai evaluasi yang tersimpan di browser ini akan dihapus.',
+        mood: 'thinking',
+        buttons: [
+          { text: 'Batal', primary: false },
+          {
+            text: 'Ya, Atur Ulang',
+            primary: true,
+            onClick: () => {
+              localStorage.removeItem(STORAGE_KEY);
+              appState = JSON.parse(JSON.stringify(defaultState));
+              saveState();
+              renderProgress();
+              showToast('Progres berhasil diatur ulang!');
+            }
+          }
+        ]
+      });
+    }
+
+    // =========================================================================
+    // 13. INISIALISASI APLIKASI SAAT HALAMAN DIMUAT
+    // =========================================================================
+    document.addEventListener('DOMContentLoaded', () => {
+      const miniLogo = document.getElementById('brandMascotMini');
+      if (miniLogo) miniLogo.innerHTML = getMascotSVG('happy', 38);
+      updateSidebarProgress();
+      renderHome();
+      typesetMath();
+    });
+  </script>
+</body>
+</html>
