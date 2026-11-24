@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>QUADRA QUIZ — Evaluasi Persamaan Kuadrat (Mode Lokal)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+  </script>
+  <script type="text/javascript" id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+  </script>
+
+  <style>
+    :root {
+      --bg-mint: #E8F5E9;
+      --soft-mint: #A5D6A7;
+      --dark-green: #1B5E20;
+      --butter-yellow: #FFF9C4;
+      --accent-yellow: #FBC02D;
+      --blush-pink: #FCE4EC;
+      --accent-pink: #F48FB1;
+      --card-bg: #FFFFFF;
+      --cream: #FAF9F6;
+      --text-main: #37474F;
+      --shadow-color: rgba(46, 125, 50, 0.08);
+      --border-radius: 20px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Nunito', sans-serif; }
+
+    body {
+      background-color: var(--bg-mint);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .bg-doodle {
+      position: fixed;
+      font-size: 2rem;
+      opacity: 0.15;
+      user-select: none;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: 0 15px 35px var(--shadow-color);
+      padding: 35px;
+      position: relative;
+      z-index: 1;
+      border: 3px solid #C8E6C9;
+    }
+
+    h1, h2, h3 { font-family: 'Poppins', sans-serif; color: var(--dark-green); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background-color: var(--soft-mint);
+      color: var(--dark-green);
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      padding: 12px 28px;
+      border-radius: 50px;
+      border: 2px solid var(--dark-green);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 0 var(--dark-green);
+      text-decoration: none;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 var(--dark-green); background-color: #81C784; }
+    .btn:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--dark-green); }
+    .btn-pink { background-color: var(--blush-pink); color: #C2185B; border-color: #C2185B; box-shadow: 0 4px 0 #C2185B; }
+    .btn-pink:hover { background-color: var(--accent-pink); color: #FFF; box-shadow: 0 6px 0 #C2185B; }
+    .btn-secondary { background-color: #E0E0E0; color: #424242; border-color: #616161; box-shadow: 0 4px 0 #616161; }
+
+    .btn-doubt {
+      background-color: #FFE0B2;
+      color: #E65100;
+      border: 2px solid #FB8C00;
+      box-shadow: 0 4px 0 #FB8C00;
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-doubt:hover { background-color: #FFB74D; color: #FFF; box-shadow: 0 6px 0 #E65100; }
+    .btn-doubt.active-doubt {
+      background-color: #FB8C00;
+      color: #FFF;
+      box-shadow: 0 2px 0 #E65100;
+      transform: translateY(2px);
+    }
+
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    .welcome-header { text-align: center; margin-bottom: 25px; }
+    .logo-badge {
+      display: inline-block;
+      background: var(--butter-yellow);
+      padding: 10px 25px;
+      border-radius: 50px;
+      border: 2px dashed var(--accent-yellow);
+      margin-bottom: 15px;
+      font-weight: 800;
+      color: #F57F17;
+    }
+    .info-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin: 25px 0; }
+    .info-card {
+      background: var(--cream);
+      padding: 15px;
+      border-radius: 15px;
+      border: 2px solid var(--soft-mint);
+      text-align: center;
+    }
+    .info-card h4 { font-size: 1.4rem; color: var(--dark-green); }
+    .info-card p { font-size: 0.9rem; font-weight: 600; color: #555; }
+
+    .form-group { margin-bottom: 20px; text-align: left; }
+    .form-group label { display: block; font-weight: 700; margin-bottom: 8px; color: var(--dark-green); }
+    .form-control {
+      width: 100%;
+      padding: 14px 18px;
+      border: 2px solid #C8E6C9;
+      border-radius: 12px;
+      font-size: 1rem;
+      background: var(--cream);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-control:focus { border-color: var(--dark-green); background: #FFF; }
+
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--butter-yellow);
+      padding: 15px 20px;
+      border-radius: 15px;
+      border: 2px solid var(--accent-yellow);
+      margin-bottom: 20px;
+    }
+    .timer { font-size: 1.2rem; font-weight: 800; color: #D84315; }
+    .progress-bar-container { width: 100%; height: 12px; background: #E0E0E0; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+    .progress-bar { height: 100%; width: 0%; background: var(--soft-mint); transition: width 0.3s; }
+
+    .question-card {
+      background: var(--cream);
+      border: 2px solid #C8E6C9;
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 15px;
+      min-height: 180px;
+    }
+    .question-title { font-weight: 700; color: var(--dark-green); margin-bottom: 10px; display: flex; justify-content: space-between; }
+    .question-text { font-size: 1.1rem; line-height: 1.6; margin-bottom: 20px; color: #263238; }
+
+    .options-grid { display: flex; flex-direction: column; gap: 12px; }
+    .option-btn {
+      background: #FFF;
+      border: 2px solid #C8E6C9;
+      border-radius: 12px;
+      padding: 14px 20px;
+      text-align: left;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .option-btn:hover { background: var(--blush-pink); border-color: var(--accent-pink); }
+    .option-btn.selected { background: var(--soft-mint); border-color: var(--dark-green); color: var(--dark-green); font-weight: 800; }
+    .option-btn .badge {
+      background: #E0E0E0;
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+    .option-btn.selected .badge { background: var(--dark-green); color: #FFF; }
+
+    .nav-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; justify-content: center; }
+    .nav-num {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      border: 2px solid #C8E6C9;
+      background: #FFF;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .nav-num.active { border-color: var(--dark-green); background: var(--butter-yellow); }
+    .nav-num.answered { background: var(--soft-mint); color: var(--dark-green); }
+    .nav-num.doubt { background: #FFE0B2; border-color: #FB8C00; color: #E65100; }
+
+    .quiz-actions { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 15px; }
+
+    .result-score-box {
+      background: var(--butter-yellow);
+      border: 3px dashed var(--accent-yellow);
+      border-radius: 20px;
+      padding: 25px;
+      text-align: center;
+      margin: 20px 0;
+    }
+    .score-number { font-size: 4rem; font-family: 'Poppins', sans-serif; font-weight: 800; color: var(--dark-green); }
+    .score-predikat { font-size: 1.4rem; font-weight: 800; color: #D84315; margin-top: 5px; }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px; margin-bottom: 25px; }
+    .stat-card { background: var(--cream); padding: 15px; border-radius: 12px; border: 2px solid #C8E6C9; text-align: center; }
+    .stat-card .val { font-size: 1.5rem; font-weight: 800; color: var(--dark-green); }
+
+    .review-item {
+      background: var(--cream);
+      border: 2px solid #C8E6C9;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .review-item.correct { border-color: #81C784; background: #E8F5E9; }
+    .review-item.wrong { border-color: #E57373; background: #FFEBEE; }
+    .review-item.unanswered { border-color: #B0BEC5; background: #ECEFF1; }
+
+    .badge-status {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #FFF;
+      margin-bottom: 10px;
+    }
+    .badge-status.correct { background: #388E3C; }
+    .badge-status.wrong { background: #D32F2F; }
+    .badge-status.unanswered { background: #616161; }
+
+    .explanation-box {
+      background: #FFF;
+      border-left: 4px solid var(--dark-green);
+      padding: 12px 15px;
+      border-radius: 4px;
+      margin-top: 12px;
+      font-size: 0.95rem;
+    }
+
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: none; align-items: center; justify-content: center;
+      z-index: 100;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box { background: #FFF; border-radius: 20px; padding: 30px; width: 90%; max-width: 450px; text-align: center; }
+
+    @media (max-width: 600px) {
+      .container { padding: 20px; }
+      .quiz-actions { flex-direction: column-reverse; gap: 10px; }
+      .quiz-actions button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-doodle" style="top: 5%; left: 5%;">$$\sqrt{x}$$</div>
+  <div class="bg-doodle" style="top: 15%; right: 8%;">$$ax^2+bx+c=0$$</div>
+  <div class="bg-doodle" style="bottom: 10%; left: 8%;">$$\Delta = b^2-4ac$$</div>
+  <div class="bg-doodle" style="bottom: 15%; right: 5%;">$$\pm \infty$$</div>
+
+  <div class="container">
+
+    <div id="screen-welcome" class="screen active">
+      <div class="welcome-header">
+        <div class="logo-badge">📐 MATEMATIKA KELAS X SMA (MODE LOKAL)</div>
+        <h1>QUADRA QUIZ</h1>
+        <p style="font-size: 1.1rem; color: #555; margin-top: 5px;">Evaluasi Pembelajaran Materi Persamaan Kuadrat</p>
+      </div>
+
+      <p style="text-align: center; margin-bottom: 20px; line-height: 1.6;">
+        Mode uji coba lokal aktif. Anda dapat mengklik seluruh tombol dan navigasi soal langsung dari file Manager.
+      </p>
+
+      <div class="info-cards">
+        <div class="info-card">
+          <h4>20 Soal</h4>
+          <p>15 PG & 5 Benar-Salah</p>
+        </div>
+        <div class="info-card">
+          <h4>30 Menit</h4>
+          <p>Timer Otomatis</p>
+        </div>
+        <div class="info-card">
+          <h4>Nilai 100</h4>
+          <p>Bobot 5 Poin / Soal</p>
+        </div>
+        <div class="info-card">
+          <h4>Lokal</h4>
+          <p>Tanpa Server GAS</p>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 30px;">
+        <button type="button" class="btn" onclick="goToIdentityScreen()">MULAI KUIS ✨</button>
+      </div>
+    </div>
+
+    <div id="screen-identity" class="screen">
+      <h2 style="text-align: center; margin-bottom: 10px;">Identitas Peserta</h2>
+      <p style="text-align: center; color: #666; margin-bottom: 25px;">Isi data diri sebelum memulai evaluasi</p>
+
+      <form id="form-identity" onsubmit="startQuiz(event)">
+        <div class="form-group">
+          <label for="input-name">Nama Lengkap</label>
+          <input type="text" id="input-name" class="form-control" placeholder="Masukkan nama lengkap" required>
+        </div>
+        <div class="form-group">
+          <label for="input-class">Kelas</label>
+          <input type="text" id="input-class" class="form-control" placeholder="Contoh: X MIPA 1 / X-A" required>
+        </div>
+        <div class="form-group">
+          <label for="input-absent">Nomor Absen</label>
+          <input type="number" id="input-absent" class="form-control" placeholder="Contoh: 15" min="1" max="60" required>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-top: 30px;">
+          <button type="button" class="btn btn-secondary" onclick="showScreen('screen-welcome')">Kembali</button>
+          <button type="submit" class="btn btn-pink">Mulai Kerjakan 🚀</button>
+        </div>
+      </form>
+    </div>
+
+    <div id="screen-quiz" class="screen">
+      <div class="quiz-header">
+        <div>
+          <span style="font-weight: 700; color: var(--dark-green);" id="quiz-student-info">Siswa</span>
+        </div>
+        <div class="timer" id="timer-display">⏱️ 30:00</div>
+      </div>
+
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="quiz-progress-bar"></div>
+      </div>
+
+      <div class="nav-grid" id="nav-grid"></div>
+
+      <div class="question-card">
+        <div class="question-title">
+          <span id="question-number">Soal 1 dari 20</span>
+          <span id="question-type" style="font-size: 0.85rem; background: var(--butter-yellow); padding: 3px 10px; border-radius: 10px; border: 1px solid var(--accent-yellow);">Pilihan Ganda</span>
+        </div>
+        <div class="question-text" id="question-text">Memuat soal...</div>
+        <div class="options-grid" id="options-container"></div>
+      </div>
+
+      <div style="text-align: center; margin-bottom: 10px;">
+        <button type="button" id="btn-doubt" class="btn-doubt" onclick="toggleDoubt()">❓ Ragu-Ragu</button>
+      </div>
+
+      <div class="quiz-actions">
+        <button type="button" class="btn btn-secondary" id="btn-prev" onclick="prevQuestion()">← Sebelumnya</button>
+        <span style="font-size: 0.9rem; font-weight: 700;" id="answered-counter">0/20 Dijawab</span>
+        <button type="button" class="btn" id="btn-next" onclick="nextQuestion()">Selanjutnya →</button>
+        <button type="button" class="btn btn-pink" id="btn-submit" onclick="confirmSubmitQuiz()">Kumpulkan 📤</button>
+      </div>
+    </div>
+
+    <div id="screen-result" class="screen">
+      <div style="text-align: center;">
+        <h2>🎉 Hasil Evaluasi Belajar</h2>
+        <p id="result-student-name" style="font-weight: 700; color: #555; margin-top: 5px;">Nama Siswa (Kelas)</p>
+
+        <div class="result-score-box">
+          <div style="font-weight: 700; color: #555;">NILAI AKHIR</div>
+          <div class="score-number" id="result-score">0</div>
+          <div class="score-predikat" id="result-predicate">Sangat Baik</div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="val" id="stat-correct">0</div>
+            <div style="font-size: 0.85rem; font-weight: 700;">Benar</div>
+          </div>
+          <div class="stat-card">
+            <div class="val" id="stat-wrong">0</div>
+            <div style="font-size: 0.85rem; font-weight: 700;">Salah</div>
+          </div>
+          <div class="stat-card">
+            <div class="val" id="stat-empty">0</div>
+            <div style="font-size: 0.85rem; font-weight: 700;">Kosong</div>
+          </div>
+          <div class="stat-card">
+            <div class="val" id="stat-accuracy">0%</div>
+            <div style="font-size: 0.85rem; font-weight: 700;">Akurasi</div>
+          </div>
+          <div class="stat-card">
+            <div class="val" id="stat-duration">0m</div>
+            <div style="font-size: 0.85rem; font-weight: 700;">Waktu</div>
+          </div>
+        </div>
+
+        <div id="save-status-msg" style="margin-bottom: 20px; font-weight: 700;"></div>
+
+        <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+          <button type="button" class="btn" onclick="showScreen('screen-review')">💡 Lihat Pembahasan Soal</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="screen-review" class="screen">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2>Pembahasan Soal</h2>
+        <button type="button" class="btn btn-secondary" onclick="showScreen('screen-result')">← Kembali ke Hasil</button>
+      </div>
+      <div id="review-container"></div>
+    </div>
+
+  </div>
+
+  <div class="modal-overlay" id="modal-confirm">
+    <div class="modal-box">
+      <h3 style="margin-bottom: 10px;" id="modal-title">Konfirmasi Kumpulkan</h3>
+      <p style="margin-bottom: 20px; color: #555;" id="modal-msg">Apakah kamu yakin ingin mengumpulkan kuis sekarang?</p>
+
+      <div style="display: flex; justify-content: center; gap: 10px;" id="modal-buttons">
+        <button type="button" class="btn btn-secondary" onclick="closeModal()">Batal</button>
+        <button type="button" class="btn btn-pink" onclick="executeSubmitQuiz(false)">Ya, Kumpulkan</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const BANK_SOAL_LOKAL = [
+      {
+        id: 1,
+        type: 'pg',
+        question: 'Bentuk umum dari persamaan kuadrat adalah $ax^2 + bx + c = 0$ dengan $a \\neq 0$. Pada persamaan kuadrat $2x^2 - 5x + 3 = 0$, nilai koefisien $a$, $b$, dan $c$ berturut-turut adalah...',
+        options: { A: '2, 5, 3', B: '2, -5, 3', C: '-2, 5, -3', D: '2, -5, -3' },
+        correctAnswer: 'B',
+        explanation: 'Pada $2x^2 - 5x + 3 = 0$, diperoleh $a = 2$, $b = -5$, dan $c = 3$.'
+      },
+      {
+        id: 2,
+        type: 'pg',
+        question: 'Akar-akar dari persamaan kuadrat $x^2 - 5x + 6 = 0$ adalah...',
+        options: { A: '$x = -2$ atau $x = -3$', B: '$x = 1$ atau $x = 6$', C: '$x = 2$ atau $x = 3$', D: '$x = -1$ atau $x = -6$' },
+        correctAnswer: 'C',
+        explanation: 'Faktor dari $x^2 - 5x + 6 = 0$ adalah $(x - 2)(x - 3) = 0$, sehingga $x = 2$ atau $x = 3$.'
+      },
+      {
+        id: 3,
+        type: 'pg',
+        question: 'Nilai diskriminan ($D = b^2 - 4ac$) dari $x^2 - 4x + 4 = 0$ adalah...',
+        options: { A: '0', B: '4', C: '8', D: '16' },
+        correctAnswer: 'A',
+        explanation: '$D = (-4)^2 - 4(1)(4) = 16 - 16 = 0$.'
+      },
+      {
+        id: 4,
+        type: 'pg',
+        question: 'Jika $D > 0$ dan merupakan bilangan kuadrat sempurna, jenis akar persamaan kuadratnya adalah...',
+        options: { A: 'Irasional dan tidak nyata', B: 'Kembar dan real', C: 'Imajiner', D: 'Real, berbeda, dan rasional' },
+        correctAnswer: 'D',
+        explanation: 'Jika $D > 0$ dan kuadrat sempurna, akarnya real, berbeda, serta rasional.'
+      },
+      {
+        id: 5,
+        type: 'pg',
+        question: 'Jika $x_1$ dan $x_2$ akar dari $3x^2 + 9x - 12 = 0$, nilai $x_1 + x_2$ adalah...',
+        options: { A: '3', B: '-3', C: '4', D: '-4' },
+        correctAnswer: 'B',
+        explanation: '$x_1 + x_2 = -\\frac{b}{a} = -\\frac{9}{3} = -3$.'
+      },
+      {
+        id: 6,
+        type: 'pg',
+        question: 'Hasil kali akar ($x_1 \\cdot x_2$) dari $2x^2 - 6x + 8 = 0$ adalah...',
+        options: { A: '3', B: '-4', C: '4', D: '8' },
+        correctAnswer: 'C',
+        explanation: '$x_1 \\cdot x_2 = \\frac{c}{a} = \\frac{8}{2} = 4$.'
+      },
+      {
+        id: 7,
+        type: 'pg',
+        question: 'Pada $x^2 + 6x + c = 0$ agar menjadi $(x + 3)^2 = 0$, nilai $c$ adalah...',
+        options: { A: '9', B: '6', C: '3', D: '12' },
+        correctAnswer: 'A',
+        explanation: '$(x + 3)^2 = x^2 + 6x + 9$, sehingga $c = 9$.'
+      },
+      {
+        id: 8,
+        type: 'pg',
+        question: 'Rumus kuadratik (Rumus ABC) yang benar adalah...',
+        options: {
+          A: '$x = \\frac{b \\pm \\sqrt{b^2 - 4ac}}{2a}$',
+          B: '$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$',
+          C: '$x = \\frac{-b \\pm \\sqrt{b^2 + 4ac}}{2a}$',
+          D: '$x = \\frac{b \\pm \\sqrt{b^2 + 4ac}}{a}$'
+        },
+        correctAnswer: 'B',
+        explanation: 'Rumus ABC yang benar adalah $x_{1,2} = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$.'
+      },
+      {
+        id: 9,
+        type: 'pg',
+        question: 'Persamaan kuadrat dengan akar $x_1 = 3$ dan $x_2 = -5$ adalah...',
+        options: {
+          A: '$x^2 - 2x - 15 = 0$',
+          B: '$x^2 + 8x + 15 = 0$',
+          C: '$x^2 - 8x - 15 = 0$',
+          D: '$x^2 + 2x - 15 = 0$'
+        },
+        correctAnswer: 'D',
+        explanation: '$x^2 - (3 - 5)x + (3)(-5) = 0 \\Rightarrow x^2 + 2x - 15 = 0$.'
+      },
+      {
+        id: 10,
+        type: 'pg',
+        question: 'Agar $x^2 - px + 9 = 0$ memiliki dua akar kembar, nilai $p$ positif adalah...',
+        options: { A: '3', B: '4', C: '6', D: '9' },
+        correctAnswer: 'C',
+        explanation: '$D = p^2 - 36 = 0 \\Rightarrow p = 6$.'
+      },
+      {
+        id: 11,
+        type: 'pg',
+        question: 'Jika $x = 2$ adalah akar dari $x^2 + kx - 12 = 0$, nilai $k$ adalah...',
+        options: { A: '4', B: '-4', C: '2', D: '-2' },
+        correctAnswer: 'A',
+        explanation: '$4 + 2k - 12 = 0 \\Rightarrow 2k = 8 \\Rightarrow k = 4$.'
+      },
+      {
+        id: 12,
+        type: 'pg',
+        question: 'Nilai diskriminan dari $3x^2 - 4x + 1 = 0$ adalah...',
+        options: { A: '16', B: '8', C: '4', D: '2' },
+        correctAnswer: 'C',
+        explanation: '$D = (-4)^2 - 4(3)(1) = 16 - 12 = 4$.'
+      },
+      {
+        id: 13,
+        type: 'pg',
+        question: 'Persegi panjang berukuran panjang $(x + 3)$ m dan lebar $x$ m dengan luas $40\\text{ m}^2$. Persamaannya...',
+        options: {
+          A: '$x^2 - 3x - 40 = 0$',
+          B: '$x^2 + 3x - 40 = 0$',
+          C: '$x^2 + 3x + 40 = 0$',
+          D: '$x^2 - 3x + 40 = 0$'
+        },
+        correctAnswer: 'B',
+        explanation: '$x(x + 3) = 40 \\Rightarrow x^2 + 3x - 40 = 0$.'
+      },
+      {
+        id: 14,
+        type: 'pg',
+        question: 'Jika akar $x^2 - 3x + 2 = 0$ adalah $\\alpha$ dan $\\beta$, PK baru berakar $2\\alpha$ dan $2\\beta$ adalah...',
+        options: {
+          A: '$x^2 - 6x + 4 = 0$',
+          B: '$x^2 - 3x + 8 = 0$',
+          C: '$x^2 - 12x + 8 = 0$',
+          D: '$x^2 - 6x + 8 = 0$'
+        },
+        correctAnswer: 'D',
+        explanation: 'Akar awal 1 dan 2, maka akar baru 2 dan 4. $(x-2)(x-4) = x^2 - 6x + 8 = 0$.'
+      },
+      {
+        id: 15,
+        type: 'pg',
+        question: 'Persamaan yang TIDAK memiliki akar real adalah...',
+        options: {
+          A: '$x^2 + 2x + 5 = 0$',
+          B: '$x^2 - 4x + 3 = 0$',
+          C: '$x^2 - 6x + 9 = 0$',
+          D: '$x^2 + 5x + 4 = 0$'
+        },
+        correctAnswer: 'A',
+        explanation: '$D = 2^2 - 4(1)(5) = -16 < 0$.'
+      },
+      {
+        id: 16,
+        type: 'bs',
+        question: 'Persamaan kuadrat $2x^2 - 8 = 0$ memiliki akar $x = 2$ dan $x = -2$.',
+        options: { BENAR: 'Pernyataan Benar', SALAH: 'Pernyataan Salah' },
+        correctAnswer: 'BENAR',
+        explanation: '$x^2 = 4 \\Rightarrow x = \\pm 2$.'
+      },
+      {
+        id: 17,
+        type: 'bs',
+        question: 'Pada $5 - 2x - x^2 = 0$, koefisien $a$ adalah 5.',
+        options: { BENAR: 'Pernyataan Benar', SALAH: 'Pernyataan Salah' },
+        correctAnswer: 'SALAH',
+        explanation: 'Koefisien $a$ adalah $-1$.'
+      },
+      {
+        id: 18,
+        type: 'bs',
+        question: 'Jika $D = 0$, grafik menyinggung sumbu X di satu titik.',
+        options: { BENAR: 'Pernyataan Benar', SALAH: 'Pernyataan Salah' },
+        correctAnswer: 'BENAR',
+        explanation: '$D = 0$ menunjukkan akar kembar.'
+      },
+      {
+        id: 19,
+        type: 'bs',
+        question: 'Hasil kali akar $x^2 - 4x - 5 = 0$ adalah 5.',
+        options: { BENAR: 'Pernyataan Benar', SALAH: 'Pernyataan Salah' },
+        correctAnswer: 'SALAH',
+        explanation: '$x_1 \\cdot x_2 = -5$.'
+      },
+      {
+        id: 20,
+        type: 'bs',
+        question: 'Bentuk kuadrat sempurna dari $x^2 + 4x = 5$ adalah $(x + 2)^2 = 9$.',
+        options: { BENAR: 'Pernyataan Benar', SALAH: 'Pernyataan Salah' },
+        correctAnswer: 'BENAR',
+        explanation: '$(x + 2)^2 = 5 + 4 = 9$.'
+      }
+    ];
+
+    let quizQuestions = BANK_SOAL_LOKAL;
+    let studentIdentity = {};
+    let userAnswers = {};
+    let doubtStatus = {};
+    let currentQuestionIndex = 0;
+    let timerInterval = null;
+    let totalSeconds = 30 * 60;
+    let remainingSeconds = totalSeconds;
+
+    function renderMath() {
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise().catch(() => {});
+      }
+    }
+
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(screenId).classList.add('active');
+      renderMath();
+    }
+
+    function goToIdentityScreen() {
+      showScreen('screen-identity');
+    }
+
+    function startQuiz(e) {
+      e.preventDefault();
+      const name = document.getElementById('input-name').value.trim();
+      const cls = document.getElementById('input-class').value.trim();
+      const absent = document.getElementById('input-absent').value.trim();
+
+      if (!name || !cls || !absent) return;
+
+      studentIdentity = { name, class: cls, absent };
+      document.getElementById('quiz-student-info').innerText = `${name} (${cls})`;
+      remainingSeconds = totalSeconds;
+      showScreen('screen-quiz');
+      initQuizUI();
+      startTimer();
+    }
+
+    function initQuizUI() {
+      renderNavGrid();
+      loadQuestion(0);
+    }
+
+    function renderNavGrid() {
+      const grid = document.getElementById('nav-grid');
+      grid.innerHTML = '';
+      quizQuestions.forEach((q, idx) => {
+        const btn = document.createElement('div');
+        let statusClass = '';
+        if (doubtStatus[q.id]) {
+          statusClass = ' doubt';
+        } else if (idx === currentQuestionIndex) {
+          statusClass = ' active';
+        } else if (userAnswers[q.id]) {
+          statusClass = ' answered';
+        }
+        btn.className = 'nav-num' + statusClass;
+        btn.innerText = idx + 1;
+        btn.onclick = () => jumpToQuestion(idx);
+        grid.appendChild(btn);
+      });
+      updateAnsweredCounter();
+    }
+
+    function updateAnsweredCounter() {
+      const count = Object.keys(userAnswers).filter(k => userAnswers[k]).length;
+      document.getElementById('answered-counter').innerText = `${count}/20 Dijawab`;
+      document.getElementById('quiz-progress-bar').style.width = `${(count / 20) * 100}%`;
+    }
+
+    function loadQuestion(index) {
+      currentQuestionIndex = index;
+      const q = quizQuestions[index];
+
+      document.getElementById('question-number').innerText = `Soal ${index + 1} dari ${quizQuestions.length}`;
+      document.getElementById('question-type').innerText = q.type === 'pg' ? 'Pilihan Ganda' : 'Benar / Salah';
+      document.getElementById('question-text').innerHTML = q.question;
+
+      const container = document.getElementById('options-container');
+      container.innerHTML = '';
+
+      Object.keys(q.options).forEach(key => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'option-btn' + (userAnswers[q.id] === key ? ' selected' : '');
+        btn.onclick = () => selectOption(q.id, key);
+
+        const badge = document.createElement('span');
+        badge.className = 'badge';
+        badge.innerText = key;
+
+        const textSpan = document.createElement('span');
+        textSpan.innerHTML = q.options[key];
+
+        btn.appendChild(badge);
+        btn.appendChild(textSpan);
+        container.appendChild(btn);
+      });
+
+      const btnDoubt = document.getElementById('btn-doubt');
+      if (doubtStatus[q.id]) {
+        btnDoubt.classList.add('active-doubt');
+        btnDoubt.innerText = '⚠️ Ragu-Ragu (Ditandai)';
+      } else {
+        btnDoubt.classList.remove('active-doubt');
+        btnDoubt.innerText = '❓ Ragu-Ragu';
+      }
+
+      document.getElementById('btn-prev').style.visibility = index === 0 ? 'hidden' : 'visible';
+      document.getElementById('btn-next').style.display = index === quizQuestions.length - 1 ? 'none' : 'inline-flex';
+      document.getElementById('btn-submit').style.display = 'inline-flex';
+
+      renderNavGrid();
+      renderMath();
+    }
+
+    function selectOption(qId, key) {
+      userAnswers[qId] = key;
+      loadQuestion(currentQuestionIndex);
+    }
+
+    function toggleDoubt() {
+      const q = quizQuestions[currentQuestionIndex];
+      doubtStatus[q.id] = !doubtStatus[q.id];
+      loadQuestion(currentQuestionIndex);
+    }
+
+    function prevQuestion() {
+      if (currentQuestionIndex > 0) loadQuestion(currentQuestionIndex - 1);
+    }
+
+    function nextQuestion() {
+      if (currentQuestionIndex < quizQuestions.length - 1) loadQuestion(currentQuestionIndex + 1);
+    }
+
+    function jumpToQuestion(idx) {
+      loadQuestion(idx);
+    }
+
+    function startTimer() {
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        remainingSeconds--;
+        const mins = Math.floor(remainingSeconds / 60);
+        const secs = remainingSeconds % 60;
+        document.getElementById('timer-display').innerText = `⏱️ ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        if (remainingSeconds <= 0) {
+          clearInterval(timerInterval);
+          executeSubmitQuiz(true);
+        }
+      }, 1000);
+    }
+
+    function confirmSubmitQuiz() {
+      const answeredCount = Object.keys(userAnswers).filter(k => userAnswers[k]).length;
+      const unanswerCount = 20 - answeredCount;
+      document.getElementById('modal-msg').innerText = unanswerCount > 0
+        ? `Masih ada ${unanswerCount} soal yang BELUM dijawab. Yakin ingin mengumpulkan?`
+        : 'Apakah kamu yakin ingin mengumpulkan jawaban sekarang?';
+      document.getElementById('modal-confirm').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('modal-confirm').classList.remove('active');
+    }
+
+    function executeSubmitQuiz() {
+      clearInterval(timerInterval);
+      closeModal();
+
+      let correctCount = 0;
+      let wrongCount = 0;
+      let unanswerCount = 0;
+
+      const explanations = quizQuestions.map(q => {
+        const ans = userAnswers[q.id] || null;
+        if (!ans) {
+          unanswerCount++;
+        } else if (ans === q.correctAnswer) {
+          correctCount++;
+        } else {
+          wrongCount++;
+        }
+        return { ...q, userAnswer: ans };
+      });
+
+      const elapsed = totalSeconds - remainingSeconds;
+      const durationText = `${Math.floor(elapsed / 60)} mnt ${elapsed % 60} detik`;
+
+      displayResultScreen({
+        score: correctCount * 5,
+        correctCount,
+        wrongCount,
+        unanswerCount,
+        accuracy: Math.round((correctCount / 20) * 100),
+        durationText,
+        explanations
+      });
+    }
+
+    function displayResultScreen(res) {
+      showScreen('screen-result');
+      document.getElementById('result-student-name').innerText = `${studentIdentity.name} (${studentIdentity.class} - Absen ${studentIdentity.absent})`;
+      document.getElementById('result-score').innerText = res.score;
+      document.getElementById('stat-correct').innerText = res.correctCount;
+      document.getElementById('stat-wrong').innerText = res.wrongCount;
+      document.getElementById('stat-empty').innerText = res.unanswerCount;
+      document.getElementById('stat-accuracy').innerText = res.accuracy + '%';
+      document.getElementById('stat-duration').innerText = res.durationText;
+
+      let predicate = 'Perlu Belajar Lagi';
+      if (res.score >= 90) predicate = '🌟 Sangat Baik';
+      else if (res.score >= 80) predicate = '👍 Baik';
+      else if (res.score >= 70) predicate = '👌 Cukup';
+
+      document.getElementById('result-predicate').innerText = predicate;
+      document.getElementById('save-status-msg').innerText = 'ℹ️ Mode lokal: hasil dihitung di browser dan tidak dikirim ke Google Sheets.';
+      renderReviewUI(res.explanations);
+    }
+
+    function renderReviewUI(explanations) {
+      const container = document.getElementById('review-container');
+      container.innerHTML = '';
+      explanations.forEach((item, idx) => {
+        const isCorrect = item.userAnswer === item.correctAnswer;
+        const isUnanswered = !item.userAnswer;
+        const statusClass = isCorrect ? 'correct' : (isUnanswered ? 'unanswered' : 'wrong');
+        const statusText = isCorrect ? 'BENAR (+5)' : (isUnanswered ? 'TIDAK DIJAWAB (0)' : 'SALAH (0)');
+
+        const div = document.createElement('div');
+        div.className = `review-item ${statusClass}`;
+        div.innerHTML = `
+          <div class="badge-status ${statusClass}">${statusText}</div>
+          <div style="font-weight: 700; margin-bottom: 8px;">Soal No. ${idx + 1}</div>
+          <div class="question-text">${item.question}</div>
+          <div style="margin: 10px 0; font-size: 0.95rem;">
+            <div><strong>Jawaban Kamu:</strong> ${item.userAnswer ? item.userAnswer + '. ' + item.options[item.userAnswer] : '<em style="color:#777">Tidak dijawab</em>'}</div>
+            <div style="color: var(--dark-green); margin-top: 4px;"><strong>Kunci Jawaban:</strong> ${item.correctAnswer}. ${item.options[item.correctAnswer]}</div>
+          </div>
+          <div class="explanation-box">
+            <strong>Pembahasan:</strong><br>${item.explanation}
+          </div>
+        `;
+        container.appendChild(div);
+      });
+      renderMath();
+    }
+  </script>
+</body>
+</html>
